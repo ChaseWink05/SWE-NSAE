@@ -14,7 +14,7 @@ function Navbar() {
         </div>
         <div className="dropdown-content">
           <Link to="/about">About Us</Link>
-          <Link to="/contact">Contact</Link>
+          <Link to="/email">Contact Us</Link>
           <Link to="/VolunteerSignup">Volunteer</Link> {/* Ensure this link points to the correct route */}
         </div>
       </div>

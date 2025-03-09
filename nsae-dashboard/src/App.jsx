@@ -14,6 +14,7 @@ import Caregivers from "./components/Caregivers";
 import HeadCare from "./components/HeadCaregivers";
 import HR from "./components/HR";
 import Signup from "./components/Signup"; // Import the Signup component
+import EmailPage from "./components/EmailPage"; // Import the EmailPage component
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path= "/caregivers" element={<Caregivers />} />
           <Route path= "/headcare" element={<HeadCare />} />
           <Route path= "/hr" element={<HR />} />
+          <Route path= "/email" element={<EmailPage />} />
 
         </Routes>
         <Footer />

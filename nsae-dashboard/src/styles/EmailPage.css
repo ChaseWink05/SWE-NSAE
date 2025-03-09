@@ -1,0 +1,33 @@
+.email-container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .email-form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .email-form input,
+  .email-form textarea {
+    margin: 10px 0;
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .email-form button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .email-form button:hover {
+    background-color: #45a049;
+  }
