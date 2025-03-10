@@ -15,7 +15,7 @@ function Login() {
     volunteers: { email: "volunteer@example.com", password: "123", route: "/volunteer" },
     boardMembers: { email: "boardmember@example.com",password: "1233", route: "/boardMembers" },
     hr : { email: "hr@example.com", password: "hrpassword", route: "/hr" },
-    caregivers : { email: "caregivers@example.com", password: "caregiverspassword", route: "/caregivers" },
+    caregivers : { email: "caregivers@example.com", password: "123", route: "/caregivers" },
     headcaregivers : { email: "headcare@example.com", password: "headcarepassword", route: "/headcare" },
   };
            
