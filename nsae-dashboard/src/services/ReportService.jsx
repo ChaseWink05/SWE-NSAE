@@ -3,38 +3,57 @@ import supabase from '../utils/supabaseClient';
 export const reportService = {
   // Get all reports 
   async getAllReports() {
-    const { data, error } = await supabase
-      .from('animal_reports')
-      .select('*')
-      .order('created_at', { ascending: false });
+    try {
+      console.log("Fetching all reports");
       
-    if (error) {
-      console.error("Error fetching reports:", error);
+      // Simplified query without joins that were causing errors
+      const { data, error } = await supabase
+        .from('animal_reports')
+        .select('*')
+        .order('created_at', { ascending: false });
+        
+      if (error) {
+        console.error("Error fetching reports:", error);
+        throw error;
+      }
+      
+      console.log(`Fetched ${data?.length || 0} total reports`);
+      return data || [];
+    } catch (error) {
+      console.error("Error in getAllReports:", error);
       throw error;
     }
-    return data || [];
   },
   
   // Get reports for specific volunteer
   async getMyReports() {
-    // Get current user
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      return [];
-    }
-    
-    const { data, error } = await supabase
-      .from('animal_reports')
-      .select('*')
-      .eq('volunteer_id', user.id)
-      .order('created_at', { ascending: false });
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
       
-    if (error) {
-      console.error("Error fetching my reports:", error);
+      if (!user) {
+        return [];
+      }
+      
+      const { data, error } = await supabase
+        .from('animal_reports')
+        .select('*')
+        .eq('volunteer_id', user.id)
+        .order('created_at', { ascending: false });
+        
+      if (error) {
+        console.error("Error fetching my reports:", error);
+        throw error;
+      }
+      
+      // Log all unique animal types to check for mismatches
+      const animalTypes = [...new Set(data.map(report => report.animal_type))];
+      console.log("Animal types in database:", animalTypes);
+      
+      return data || [];
+    } catch (error) {
+      console.error("Error in getMyReports:", error);
       throw error;
     }
-    return data || [];
   },
   
   // Create new report without worrying about policies
@@ -146,8 +165,32 @@ async deleteReport(reportId) {
       throw error;
     }
     return data[0];
+  },
+  async getReportsByAnimalType(animalType) {
+    try {
+      console.log(`Filtering reports for animal type: ${animalType}`);
+      
+      // Get reports filtered by animal type
+      const { data, error } = await supabase
+        .from('animal_reports')
+        .select('*')
+        .eq('animal_type', animalType)
+        .order('created_at', { ascending: false });
+        
+      if (error) {
+        console.error("Error in getReportsByAnimalType:", error);
+        throw error;
+      }
+      
+      console.log(`Found ${data?.length || 0} reports for ${animalType}`);
+      return data || [];
+    } catch (error) {
+      console.error("Error fetching reports by animal type:", error);
+      throw error;
+    }
   }
 };
+
 
 // Helper function for image upload
 async function handleImageUpload(imageFile, reportId) {
@@ -184,5 +227,7 @@ async function handleImageUpload(imageFile, reportId) {
     // We continue without the image if upload fails
   }
 }
+
+
 
 export default reportService;

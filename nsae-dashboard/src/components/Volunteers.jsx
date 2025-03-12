@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import supabase from '../utils/supabaseClient';
-import reportService from '../services/ReportService'; // Make sure this matches your actual file name
+import reportService from '../services/ReportService';
 import '../styles/Volunteer.css';
 
 function Volunteers() {
@@ -22,12 +22,24 @@ function Volunteers() {
   const [reports, setReports] = useState([]);
   const [newReport, setNewReport] = useState({
     animalType: '',
+    otherAnimalType: '',
     location: '',
     description: '',
     imageFile: null,
     imagePreview: null
   });
   const [editingReport, setEditingReport] = useState(null);
+
+  // Predefined animal types with proper labels
+  const animalOptions = [
+    {value: 'Dog', label: 'Dog'},
+    {value: 'Cat', label: 'Cat'},
+    {value: 'Bird', label: 'Bird'},
+    {value: 'Reptile', label: 'Reptile (Snake, Lizard, etc.)'},
+    {value: 'Small Mammal', label: 'Small Mammal (Rabbit, Guinea Pig, etc.)'},
+    {value: 'Wildlife', label: 'Wildlife (Fox, Deer, etc.)'},
+    {value: 'Other', label: 'Other'}
+  ];
 
   // Load data on component mount
   useEffect(() => {
@@ -39,6 +51,37 @@ function Volunteers() {
 
     // Check auth status and load reports
     checkAuthAndLoadReports();
+    
+    // Set up real-time subscription for updates
+    const setupRealtimeSubscription = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const subscription = supabase
+          .channel('animal_reports_changes')
+          .on(
+            'postgres_changes',
+            {
+              event: '*', 
+              schema: 'public',
+              table: 'animal_reports',
+              filter: `volunteer_id=eq.${user.id}`
+            },
+            (payload) => {
+              console.log('Change received!', payload);
+              fetchReports(); // Reload reports when changes occur
+            }
+          )
+          .subscribe();
+          
+        // Cleanup subscription on unmount
+        return () => {
+          subscription.unsubscribe();
+        };
+      }
+    };
+    
+    setupRealtimeSubscription();
   }, []);
 
   // Auth check and reports loading
@@ -99,12 +142,28 @@ function Volunteers() {
     if (editingReport) {
       // Handle name differences between form fields and DB fields
       if (name === "animalType") {
-        setEditingReport(prev => ({ ...prev, animal_type: value }));
+        setEditingReport(prev => ({ 
+          ...prev, 
+          animal_type: value,
+          // Reset the other type field if not "Other"
+          other_animal_type: value !== 'Other' ? '' : prev.other_animal_type
+        }));
+      } else if (name === "otherAnimalType") {
+        setEditingReport(prev => ({ ...prev, other_animal_type: value }));
       } else {
         setEditingReport(prev => ({ ...prev, [name]: value }));
       }
     } else {
-      setNewReport(prev => ({ ...prev, [name]: value }));
+      if (name === "animalType") {
+        setNewReport(prev => ({ 
+          ...prev, 
+          animalType: value,
+          // Reset the other type field if not "Other"
+          otherAnimalType: value !== 'Other' ? '' : prev.otherAnimalType
+        }));
+      } else {
+        setNewReport(prev => ({ ...prev, [name]: value }));
+      }
     }
   };
 
@@ -127,16 +186,21 @@ function Volunteers() {
 
   const submitReport = async () => {
     try {
+      // Handle "Other" animal type
+      const finalAnimalType = (editingReport ? editingReport.animal_type : newReport.animalType) === 'Other' 
+        ? `Other: ${editingReport ? editingReport.other_animal_type : newReport.otherAnimalType}`
+        : (editingReport ? editingReport.animal_type : newReport.animalType);
+      
       if (editingReport) {
         // Update existing report
         console.log("Updating report:", editingReport.id, {
-          animalType: editingReport.animal_type,
+          animalType: finalAnimalType,
           location: editingReport.location,
           description: editingReport.description
         });
         
         await reportService.updateReport(editingReport.id, {
-          animalType: editingReport.animal_type,
+          animalType: finalAnimalType,
           location: editingReport.location,
           description: editingReport.description
         });
@@ -149,10 +213,14 @@ function Volunteers() {
           return;
         }
         
+        if (newReport.animalType === 'Other' && !newReport.otherAnimalType) {
+          alert("Please specify the animal type");
+          return;
+        }
+        
         // Create new report
-        console.log("Creating report:", newReport);
         await reportService.createReport({
-          animalType: newReport.animalType,
+          animalType: finalAnimalType,
           location: newReport.location,
           description: newReport.description,
           imageFile: newReport.imageFile
@@ -164,6 +232,7 @@ function Volunteers() {
       // Reset form and refresh reports
       setNewReport({
         animalType: '',
+        otherAnimalType: '',
         location: '',
         description: '',
         imageFile: null,
@@ -181,24 +250,42 @@ function Volunteers() {
 
   const startEditReport = (report) => {
     console.log("Starting edit for report:", report);
+    
+    // Handle "Other:" prefix in animal_type
+    let animalType = report.animal_type;
+    let otherAnimalType = '';
+    
+    if (report.animal_type && report.animal_type.startsWith('Other:')) {
+      animalType = 'Other';
+      otherAnimalType = report.animal_type.substring(7).trim();
+    }
+    
     // Make a copy to avoid direct state mutation
     setEditingReport({
       ...report,
       // Ensure these fields exist for the form
-      animal_type: report.animal_type,
+      animal_type: animalType,
+      other_animal_type: otherAnimalType,
       location: report.location,
       description: report.description
     });
+    
     setShowReportForm(true);
   };
 
-  const deleteReport = async (id) => {
+  const deleteReport = async (id, status) => {
     if (!id) {
       console.error("No report ID provided");
       return;
     }
     
-    if (window.confirm("Are you sure you want to delete this report?")) {
+    let confirmMessage = "Are you sure you want to delete this report?";
+    
+    if (status && status !== 'pending') {
+      confirmMessage = `This report has already been ${status}. Are you absolutely sure you want to delete it? This action cannot be undone.`;
+    }
+    
+    if (window.confirm(confirmMessage)) {
       try {
         console.log("Deleting report:", id);
         await reportService.deleteReport(id);
@@ -216,6 +303,7 @@ function Volunteers() {
     setEditingReport(null);
     setNewReport({
       animalType: '',
+      otherAnimalType: '',
       location: '',
       description: '',
       imageFile: null,
@@ -308,9 +396,14 @@ function Volunteers() {
         <div className="volunteer-reports">
           <div className="reports-header">
             <h2>Stray Animal Reports</h2>
-            <button onClick={() => !editingReport && setShowReportForm(!showReportForm)} className="report-button">
-              {showReportForm && !editingReport ? "Cancel Report" : "Report Stray Animal"}
-            </button>
+            <div>
+              <button onClick={fetchReports} className="refresh-button">
+                Refresh Reports
+              </button>
+              <button onClick={() => !editingReport && setShowReportForm(!showReportForm)} className="report-button">
+                {showReportForm && !editingReport ? "Cancel Report" : "Report Stray Animal"}
+              </button>
+            </div>
           </div>
           
           {showReportForm && (
@@ -318,16 +411,35 @@ function Volunteers() {
               <h3>{editingReport ? "Edit Animal Report" : "New Animal Report"}</h3>
               
               <div className="form-group">
-                <label>Animal Type (Dog, Cat, etc.):</label>
-                <input 
-                  type="text" 
-                  name="animalType" 
-                  value={editingReport ? editingReport.animal_type : newReport.animalType} 
+                <label>Animal Type:</label>
+                <select
+                  name="animalType"
+                  value={editingReport ? editingReport.animal_type : newReport.animalType}
                   onChange={handleReportChange}
+                  className="animal-select"
                   required
-                />
+                >
+                  <option value="">-- Select Animal Type --</option>
+                  {animalOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                {editingReport?.animal_type === 'Other' || newReport.animalType === 'Other' ? (
+                  <div className="form-group other-animal">
+                    <label>Please specify:</label>
+                    <input
+                      type="text"
+                      name="otherAnimalType"
+                      value={editingReport ? editingReport.other_animal_type || '' : newReport.otherAnimalType || ''}
+                      onChange={handleReportChange}
+                      placeholder="Enter animal type"
+                    />
+                  </div>
+                ) : null}
               </div>
-              
+                            
               <div className="form-group">
                 <label>Location:</label>
                 <input 
@@ -384,7 +496,10 @@ function Volunteers() {
           )}
           
           {isLoading ? (
-            <p>Loading reports...</p>
+            <div className="loading-indicator">
+              <div className="loading-spinner"></div>
+              <p>Loading reports...</p>
+            </div>
           ) : (
             <div className="reports-list">
               <h3>Your Reports</h3>
@@ -396,26 +511,32 @@ function Volunteers() {
                   {reports.map(report => (
                     <div key={report.id} className="report-card vertical-layout">
                       {report.image_url && (
-                        <img src={report.image_url} alt="Reported Animal" className="report-image" />
+                        <div className="image-container">
+                          <img src={report.image_url} alt="Reported Animal" className="report-image" />
+                        </div>
                       )}
                       <div className="report-details">
-                        <h4>{report.animal_type}</h4>
+                        <h4>
+                          {report.animal_type.startsWith('Other:') 
+                            ? report.animal_type 
+                            : report.animal_type}
+                        </h4>
                         <p><strong>Location:</strong> {report.location}</p>
                         <p><strong>Date:</strong> {new Date(report.created_at).toLocaleDateString()}</p>
-                        <p><strong>Status:</strong> <span className={`status-${(report.status || 'pending').toLowerCase()}`}>
+                        <p><strong>Status:</strong> <span className={`status-badge status-${(report.status || 'pending').toLowerCase()}`}>
                           {report.status ? (report.status.charAt(0).toUpperCase() + report.status.slice(1)) : 'Pending'}
                         </span></p>
                         
-                        {(report.status === "pending" || !report.status) && (
-                          <div className="report-actions">
+                        <div className="report-actions">
+                          {(report.status === "pending" || !report.status) && (
                             <button onClick={() => startEditReport(report)} className="edit-report-button">
                               Edit
-                            </button>
-                            <button onClick={() => deleteReport(report.id)} className="delete-report-button">
+                              </button>
+                            )}
+                            <button onClick={() => deleteReport(report.id, report.status)} className="delete-report-button">
                               Delete
                             </button>
-                          </div>
-                        )}
+                        </div>
                         
                         {report.caregiver_notes && (
                           <div className="caregiver-feedback">

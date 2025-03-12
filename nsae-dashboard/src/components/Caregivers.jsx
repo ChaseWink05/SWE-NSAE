@@ -9,16 +9,93 @@ function Caregivers() {
   const [filter, setFilter] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
   const [reviewNotes, setReviewNotes] = useState('');
+  const [caregiver, setCaregiver] = useState({
+    email: '',
+    specialization: null
+  });
 
+  // Initialize data on component mount
   useEffect(() => {
-    fetchReports();
+    checkCaregiver();
+    // fetchReports will be called after specialization is set
   }, []);
+
+  // Fetch reports when specialization changes
+  useEffect(() => {
+    if (caregiver.specialization) {
+      console.log("Specialization set to:", caregiver.specialization, "- fetching reports");
+      fetchReports();
+    }
+  }, [caregiver.specialization]);
+
+  const checkCaregiver = async () => {
+    try {
+      // Get the current user from Supabase auth
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user || !user.email) {
+        console.error("No authenticated user found");
+        return;
+      }
+      
+      const email = user.email.toLowerCase();
+      console.log("Checking specialization for authenticated email:", email);
+      
+      let specialization = null;
+      
+      // Exact email matching for caregiver specialization
+      if (email === 'reptile-caregiver@example.com') {
+        specialization = 'Reptile';
+        console.log("Matched reptile caregiver");
+      } else if (email === 'dog-caregiver@example.com') {
+        specialization = 'Dog';
+        console.log("Matched dog caregiver");
+      } else if (email === 'cat-caregiver@example.com') {
+        specialization = 'Cat';
+        console.log("Matched cat caregiver");
+      } else if (email === 'bird-caregiver@example.com') {
+        specialization = 'Bird';
+      } else if (email === 'smallmammal-caregiver@example.com') {
+        specialization = 'Small Mammal';
+      } else if (email === 'wildlife-caregiver@example.com') {
+        specialization = 'Wildlife';
+      } else if (email === 'admin-caregiver@example.com') {
+        specialization = 'all';
+        console.log("Admin caregiver - showing all reports");
+      } else {
+        specialization = 'all';  // Default to all for unknown caregivers
+        console.log("Unknown caregiver type - defaulting to all animals");
+      }
+      
+      console.log("Final specialization:", specialization);
+      
+      setCaregiver({
+        email: email,
+        specialization: specialization
+      });
+    } catch (error) {
+      console.error("Error checking caregiver:", error);
+    }
+  };
 
   const fetchReports = async () => {
     try {
       setIsLoading(true);
-      const data = await reportService.getAllReports();
-      setReports(data);
+      console.log("Fetching reports with specialization:", caregiver.specialization);
+      
+      let data;
+      if (!caregiver.specialization || caregiver.specialization === 'all') {
+        // Admin or unknown specialization - show all reports
+        console.log("Fetching ALL reports (admin view)");
+        data = await reportService.getAllReports();
+      } else {
+        // Filter reports by animal type
+        console.log(`Fetching reports for ${caregiver.specialization} only`);
+        data = await reportService.getReportsByAnimalType(caregiver.specialization);
+      } 
+      
+      console.log(`Fetched ${data?.length || 0} reports:`, data);
+      setReports(data || []);
     } catch (error) {
       console.error("Error fetching reports:", error);
       alert("Failed to load reports. Please try again.");
@@ -42,48 +119,69 @@ function Caregivers() {
 
   // Filter reports based on status
   const filteredReports = filter === 'all'
-  ? reports
-  : reports.filter(report => {
-      if (filter === 'pending') {
-        // Consider both null and 'pending' status as pending
-        return !report.status || report.status === 'pending';
-      }
-      return report.status === filter;
-    });
+    ? reports
+    : reports.filter(report => {
+        if (filter === 'pending') {
+          // Consider both null and 'pending' status as pending
+          return !report.status || report.status === 'pending';
+        }
+        return report.status === filter;
+      });
 
   return (
     <div className="caregiver-page">
       <h1>Caregiver Dashboard</h1>
-
-      <div className="filter-controls">
-        <button 
-          className={filter === 'all' ? 'active' : ''} 
-          onClick={() => setFilter('all')}
-        >
-          All Reports
-        </button>
-        <button 
-          className={filter === 'pending' ? 'active' : ''} 
-          onClick={() => setFilter('pending')}
-        >
-          Pending
-        </button>
-        <button 
-          className={filter === 'approved' ? 'active' : ''} 
-          onClick={() => setFilter('approved')}
-        >
-          Approved
-        </button>
-        <button 
-          className={filter === 'rejected' ? 'active' : ''} 
-          onClick={() => setFilter('rejected')}
-        >
-          Rejected
+      
+      {caregiver.specialization && (
+        <div className="specialization-badge">
+          <p>
+            You are responsible for: 
+            <strong>
+              {caregiver.specialization === 'all' 
+                ? 'All Animals' 
+                : `${caregiver.specialization} Reports`}
+            </strong>
+          </p>
+        </div>
+      )}
+      
+      <div className="filter-header">
+        <div className="filter-controls">
+          <button 
+            className={filter === 'all' ? 'active' : ''} 
+            onClick={() => setFilter('all')}
+          >
+            All Reports
+          </button>
+          <button 
+            className={filter === 'pending' ? 'active' : ''} 
+            onClick={() => setFilter('pending')}
+          >
+            Pending
+          </button>
+          <button 
+            className={filter === 'approved' ? 'active' : ''} 
+            onClick={() => setFilter('approved')}
+          >
+            Approved
+          </button>
+          <button 
+            className={filter === 'rejected' ? 'active' : ''} 
+            onClick={() => setFilter('rejected')}
+          >
+            Rejected
+          </button>
+        </div>
+        <button className='refresh-button' onClick={fetchReports}>
+          Refresh
         </button>
       </div>
 
       {isLoading ? (
-        <p>Loading reports...</p>
+        <div className="loading-indicator">
+          <div className="loading-spinner"></div>
+          <p>Loading reports...</p>
+        </div>
       ) : (
         <div className="reports-container">
           <div className="reports-list">
@@ -93,19 +191,23 @@ function Caregivers() {
               filteredReports.map(report => (
                 <div 
                   key={report.id} 
-                  className={`report-card ${selectedReport?.id === report.id ? 'selected' : ''}`}
+                  className={`report-card vertical-layout ${selectedReport?.id === report.id ? 'selected' : ''}`}
                   onClick={() => setSelectedReport(report)}
                 >
                   {report.image_url && (
-                    <img src={report.image_url} alt="Reported Animal" className="report-thumbnail" />
+                    <div className="image-container">
+                      <img src={report.image_url} alt="Reported Animal" className="report-thumbnail" />
+                    </div>
                   )}
                   <div className="report-summary">
-                    <h3>{report.animal_type}</h3>
+                    <h3>
+                      <span className="animal-type-tag">{report.animal_type}</span>
+                    </h3>
                     <p><strong>Location:</strong> {report.location}</p>
                     <p><strong>Date:</strong> {new Date(report.created_at).toLocaleDateString()}</p>
-                    <p><strong>Status:</strong> <span className={`status-${(report.status || 'pending').toLowerCase()}`}>
-                          {report.status ? (report.status.charAt(0).toUpperCase() + report.status.slice(1)) : 'Pending'}
-                        </span></p>
+                    <p><strong>Status:</strong> <span className={`status-badge status-${(report.status || 'pending').toLowerCase()}`}>
+                      {report.status ? (report.status.charAt(0).toUpperCase() + report.status.slice(1)) : 'Pending'}
+                    </span></p>
                     <p><strong>Volunteer:</strong> {report.volunteers?.full_name || report.volunteers?.email || 'Unknown'}</p>
                   </div>
                 </div>
@@ -120,9 +222,9 @@ function Caregivers() {
               <div className="detail-header">
                 <h3>{selectedReport.animal_type} reported by {selectedReport.volunteers?.full_name || selectedReport.volunteers?.email || 'Unknown'}</h3>
                 <span className={`status-badge status-${(selectedReport.status || 'pending').toLowerCase()}`}>
-                {selectedReport.status 
-                ? (selectedReport.status.charAt(0).toUpperCase() + selectedReport.status.slice(1)) 
-                : 'Pending'}
+                  {selectedReport.status 
+                    ? (selectedReport.status.charAt(0).toUpperCase() + selectedReport.status.slice(1)) 
+                    : 'Pending'}
                 </span>
               </div>
               
@@ -146,7 +248,7 @@ function Caregivers() {
                   <span className="value">{selectedReport.description || 'No description provided'}</span>
                 </div>
                 
-                {selectedReport.status !== 'pending' && (
+                {selectedReport.status && selectedReport.status !== 'pending' && (
                   <>
                     <div className="info-item">
                       <span className="label">Reviewed By:</span>
@@ -155,7 +257,7 @@ function Caregivers() {
                     
                     <div className="info-item">
                       <span className="label">Reviewed On:</span>
-                      <span className="value">{new Date(selectedReport.reviewed_at).toLocaleString()}</span>
+                      <span className="value">{selectedReport.reviewed_at ? new Date(selectedReport.reviewed_at).toLocaleString() : 'Unknown'}</span>
                     </div>
                     
                     {selectedReport.caregiver_notes && (

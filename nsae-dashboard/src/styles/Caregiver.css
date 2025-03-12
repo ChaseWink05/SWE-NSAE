@@ -188,3 +188,49 @@
     margin-top: 20px;
     cursor: pointer;
   }
+  .filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .refresh-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .refresh-button::before {
+    content: "↻";
+    font-size: 16px;
+  }
+  
+  .refresh-button:hover {
+    background-color: #2980b9;
+  }
+  
+  .specialization-badge {
+    background-color: #f8f9fa;
+    border-left: 4px solid #3498db;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+  }
+  
+  .specialization-badge p {
+    margin: 0;
+    color: #2c3e50;
+  }
+  
+  .specialization-badge strong {
+    color: #16a085;
+    margin-left: 5px;
+  }

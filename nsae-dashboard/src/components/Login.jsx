@@ -17,28 +17,41 @@ function Login() {
     hr : { email: "hr@example.com", password: "hrpassword", route: "/hr" },
     caregivers : { email: "caregivers@example.com", password: "123", route: "/caregivers" },
     headcaregivers : { email: "headcare@example.com", password: "headcarepassword", route: "/headcare" },
+    dogCaregiver: { email: "dog-caregiver@example.com", password: "123", route: "/caregivers" },
+    catCaregiver: { email: "cat-caregiver@example.com", password: "123", route: "/caregivers" },
+    reptileCaregiver: { email: "reptile-caregiver@example.com", password: "123", route: "/caregivers" }
   };
            
   const handleLogin = async () => {
-    // Check predefined credentials first
-    const predefinedUser = Object.values(predefinedCredentials).find(
-      (user) => user.email === email && user.password === password
-    );
-
-    if (predefinedUser) {
-      navigate(predefinedUser.route);
-      return;
+    try {
+      // Sign in all users with Supabase
+      const { data, error } = await supabase.auth.signInWithPassword({ 
+        email, 
+        password 
+      });
+    
+      if (error) {
+        setMessage("Login failed: " + error.message);
+        return;
+      }
+  
+      // Check if this is a predefined user to determine the redirect route
+      const predefinedUser = Object.values(predefinedCredentials).find(
+        (user) => user.email.toLowerCase() === email.toLowerCase()
+      );
+  
+      // Redirect based on user type
+      if (predefinedUser) {
+        console.log("Logged in as:", email, "- redirecting to", predefinedUser.route);
+        navigate(predefinedUser.route);
+      } else {
+        console.log("Logged in as regular volunteer:", email);
+        navigate("/volunteer");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setMessage("An unexpected error occurred. Please try again.");
     }
-
-    // If not a predefined user, try to log in with Supabase
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      setMessage("Login failed: " + error.message);
-      return;
-    }
-
-    navigate("/volunteer"); // Navigate to the Volunteers page for non-predefined accounts
   };
 
   return (
