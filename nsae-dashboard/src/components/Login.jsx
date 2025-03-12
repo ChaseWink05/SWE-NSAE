@@ -58,7 +58,7 @@ function Login() {
   const handleLogin = async () => {
     // Log in with Supabase
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
+  
     if (error) {
       setMessage("Login failed: " + error.message);
       return;
@@ -92,6 +92,7 @@ function Login() {
       navigate("/volunteer"); // Default route if no match
     }
   };
+  
 
   return (
     <div className="login-container">

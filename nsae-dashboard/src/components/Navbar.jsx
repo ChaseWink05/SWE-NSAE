@@ -50,6 +50,7 @@ function Navbar() {
           <Link to="/about">About Us</Link>
           <Link to="/email">Contact Us</Link>
           <Link to="/login">Login</Link> {/* Ensure this link points to the correct route */}
+          
         </div>
       </div>
       <div className="navbar-logo">

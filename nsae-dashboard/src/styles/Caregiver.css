@@ -234,3 +234,24 @@
     color: #16a085;
     margin-left: 5px;
   }
+
+  .reports-chat-container {
+    display: flex;
+    gap: 20px;
+  }
+  
+  /* Expands reports when chat is closed */
+  .reports-container {
+    flex: 1;
+  }
+  
+  /* Chat styles */
+  .chat-container {
+    width: 350px; 
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  

@@ -13,33 +13,37 @@ import BoardMembers from "./components/BoardMembers";
 import Caregivers from "./components/Caregivers";
 import HeadCare from "./components/HeadCaregivers";
 import HR from "./components/HR";
-import Signup from "./components/Signup";
-import EmailPage from "./components/EmailPage";
+import Signup from "./components/Signup"; // Import the Signup component
+import EmailPage from "./components/EmailPage"; // Import the EmailPage component
+import ChatApp from "./components/ChatApp";
 
 function App() {
   return (
-      <Router>
-        <div>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/Home" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/ceo" element={<CEOPage />} />
-            <Route path="/handler" element={<HandlerPage />} />
-            <Route path="/volunteer" element={<Volunteers />} />
-            <Route path= "/boardMembers" element={<BoardMembers />} />
-            <Route path= "/caregivers" element={<Caregivers />} />
-            <Route path= "/headcare" element={<HeadCare />} />
-            <Route path= "/hr" element={<HR />} />
-            <Route path= "/email" element={<EmailPage />} />
-          </Routes>
-          <Footer />
-        </div>
-      </Router>
+    <Router>
+      <div>
+        <Navbar /> {/* Include the Navbar component here */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/Home" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/signup" element={<Signup />} /> {/* Add the Signup route */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/ceo" element={<CEOPage />} />
+          <Route path="/handler" element={<HandlerPage />} />
+          <Route path="/volunteer" element={<Volunteers />} />
+          <Route path= "/volunteer" element={<Volunteers />} />
+          <Route path= "/boardMembers" element={<BoardMembers />} />
+          <Route path= "/caregivers" element={<Caregivers />} />
+          <Route path= "/headcare" element={<HeadCare />} />
+          <Route path= "/hr" element={<HR />} />
+          <Route path= "/email" element={<EmailPage />} />
+          <Route path= "/ChatApp" element={<ChatApp />} />
+
+        </Routes>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 
