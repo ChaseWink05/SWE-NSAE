@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // <-- Make sure useEffect is imported here
+
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 import supabase from "../utils/supabaseClient"; // Import Supabase client
@@ -7,50 +8,88 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track if the user is logged in
   const navigate = useNavigate();
 
-  const predefinedCredentials = {
-    ceo: { email: "ceo@example.com", password: "ceopassword", route: "/ceo" },
-    handler: { email: "handler@example.com", password: "handlerpassword", route: "/handler" },
-    volunteers: { email: "volunteer@example.com", password: "123", route: "/volunteer" },
-    boardMembers: { email: "boardmember@example.com",password: "1233", route: "/boardMembers" },
-    hr : { email: "hr@example.com", password: "hrpassword", route: "/hr" },
-    caregivers : { email: "caregivers@example.com", password: "123", route: "/caregivers" },
-    headcaregivers : { email: "headcare@example.com", password: "headcarepassword", route: "/headcare" },
-    dogCaregiver: { email: "dog-caregiver@example.com", password: "123", route: "/caregivers" },
-    catCaregiver: { email: "cat-caregiver@example.com", password: "123", route: "/caregivers" },
-    reptileCaregiver: { email: "reptile-caregiver@example.com", password: "123", route: "/caregivers" }
-  };
-           
-  const handleLogin = async () => {
-    try {
-      // Sign in all users with Supabase
-      const { data, error } = await supabase.auth.signInWithPassword({ 
-        email, 
-        password 
-      });
-    
+     // Check if the user is already logged in on component mount
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: userData, error } = await supabase.auth.getUser(); // Use getUser() instead of user()
+      
       if (error) {
-        setMessage("Login failed: " + error.message);
+        console.error("Error fetching user:", error);
         return;
       }
-  
-      // Check if this is a predefined user to determine the redirect route
-      const predefinedUser = Object.values(predefinedCredentials).find(
-        (user) => user.email.toLowerCase() === email.toLowerCase()
-      );
-  
-      // Redirect based on user type
-      if (predefinedUser) {
-        console.log("Logged in as:", email, "- redirecting to", predefinedUser.route);
-        navigate(predefinedUser.route);
-      } else {
-        console.log("Logged in as regular volunteer:", email);
-        navigate("/volunteer");
+
+      if (userData) {
+        setIsLoggedIn(true);
+        const userEmail = userData.user.email;
+
+        // Navigate based on user email
+        if (userEmail === "ceo@example.com") {
+          navigate("/ceo");
+        } else if (userEmail === "handler@example.com") {
+          navigate("/handler");
+        } else if (userEmail === "volunteer@example.com") {
+          navigate("/volunteer");
+        } else if (userEmail === "boardmember@example.com") {
+          navigate("/boardMembers");
+        } else if (userEmail === "reptile-caregiver@example.com") {
+          navigate("/caregivers");
+        } else if (userEmail === "hr@example.com") {
+          navigate("/hr");
+        }else if (userEmail === "dog-caregiver@example.com") {
+          navigate("/caregivers");
+        }else if (userEmail === "cat-caregiver@example.com") {
+          navigate("/caregivers");
+        } else if (userEmail === "caregivers@example.com") {
+          navigate("/caregivers");
+        } else if (userEmail === "headcare@example.com") {
+          navigate("/headcare");
+        } else {
+          navigate("/volunteer"); // Default route for other users
+        }
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      setMessage("An unexpected error occurred. Please try again.");
+    };
+
+    checkUser();
+  }, [navigate]);
+
+  const handleLogin = async () => {
+    // Log in with Supabase
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      setMessage("Login failed: " + error.message);
+      return;
+    }
+
+    // Get the logged-in user email
+    const userEmail = data.user.email;
+
+    // Navigate based on the email address
+    if (userEmail === "ceo@example.com") {
+      navigate("/ceo");
+    } else if (userEmail === "handler@example.com") {
+      navigate("/handler");
+    } else if (userEmail === "volunteer@example.com") {
+      navigate("/volunteer");
+    } else if (userEmail === "boardmember@example.com") {
+      navigate("/boardMembers");
+    } else if (userEmail === "hr@example.com") {
+      navigate("/hr");
+    }else if (userEmail === "reptile-caregiver@example.com") {
+      navigate("/caregivers");
+    }else if (userEmail === "dog-caregiver@example.com") {
+      navigate("/caregivers");
+    }else if (userEmail === "cat-caregiver@example.com") {
+      navigate("/caregivers");
+    } else if (userEmail === "caregivers@example.com") {
+      navigate("/caregivers");
+    } else if (userEmail === "headcare@example.com") {
+      navigate("/headcare");
+    } else {
+      navigate("/volunteer"); // Default route if no match
     }
   };
 

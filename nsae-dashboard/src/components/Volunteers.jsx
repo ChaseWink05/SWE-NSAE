@@ -7,7 +7,6 @@ function Volunteers() {
   // Profile state
   const [profile, setProfile] = useState({
     name: '',
-    hobby: '',
     town: '',
     bio: '',
     image: ''
@@ -43,13 +42,42 @@ function Volunteers() {
 
   // Load data on component mount
   useEffect(() => {
-    // Load profile from localStorage
-    const savedProfile = localStorage.getItem("volunteer");
-    if (savedProfile) {
-      setProfile(JSON.parse(savedProfile));
-    }
-
-    // Check auth status and load reports
+    const fetchUserProfile = async () => {
+      try {
+        // Get authenticated user
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        
+        if (authError || !user) {
+          console.error("Error fetching authenticated user:", authError?.message);
+          return;
+        }
+  
+        // Fetch user profile from Supabase 'users' table
+        const { data: userData, error: userError } = await supabase
+          .from("users")
+          .select("name, hometown, bio")
+          .eq("id", user.id)
+          .single();
+  
+        if (userError) {
+          console.error("Error fetching user profile:", userError.message);
+          return;
+        }
+  
+        // Update profile state with fetched data
+        setProfile({
+          name: userData.name || "",
+          town: userData.hometown || "",
+          bio: userData.bio || "",
+          image: ""
+        });
+  
+      } catch (error) {
+        console.error("Unexpected error fetching profile:", error);
+      }
+    };
+  
+    fetchUserProfile();
     checkAuthAndLoadReports();
     
     // Set up real-time subscription for updates
@@ -83,7 +111,7 @@ function Volunteers() {
     
     setupRealtimeSubscription();
   }, []);
-
+  
   // Auth check and reports loading
   const checkAuthAndLoadReports = async () => {
     try {
@@ -131,10 +159,42 @@ function Volunteers() {
     }
   };
 
-  const saveProfile = () => {
-    localStorage.setItem("volunteer", JSON.stringify(profile));
-    setIsEditing(false);
+  const saveProfile = async () => {
+    try {
+      // Get authenticated user
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
+      if (authError || !user) {
+        console.error("User not authenticated:", authError?.message);
+        alert("You must be logged in to update your profile.");
+        return;
+      }
+  
+      // Update user profile in Supabase
+      const { error: updateError } = await supabase
+        .from("users")
+        .update({
+          name: profile.name,
+          hometown: profile.town,
+          bio: profile.bio
+        })
+        .eq("id", user.id);
+  
+      if (updateError) {
+        console.error("Error updating profile:", updateError.message);
+        alert("Failed to update profile. Please try again.");
+        return;
+      }
+  
+      alert("Profile updated successfully!");
+      setIsEditing(false); // Exit edit mode
+  
+    } catch (error) {
+      console.error("Unexpected error updating profile:", error);
+      alert("An unexpected error occurred.");
+    }
   };
+  
 
   // Report functions
   const handleReportChange = (e) => {
@@ -330,15 +390,7 @@ function Volunteers() {
               />
             </div>
             
-            <div className="form-group">
-              <label>Favorite Hobby:</label>
-              <input 
-                type="text" 
-                name="hobby" 
-                value={profile.hobby} 
-                onChange={handleChange} 
-              />
-            </div>
+            
             
             <div className="form-group">
               <label>Home Town:</label>
@@ -374,22 +426,10 @@ function Volunteers() {
           </div>
         ) : (
           <div className="profile-display">
-            <div className="profile-header">
-              {profile.image && <img src={profile.image} alt="Profile" className="profile-image" />}
-              <div>
-                <h3>{profile.name || "Your Name"}</h3>
-                {profile.hobby && <p><strong>Hobby:</strong> {profile.hobby}</p>}
-                {profile.town && <p><strong>From:</strong> {profile.town}</p>}
-              </div>
-              <button onClick={() => setIsEditing(true)} className="edit-button">Edit Profile</button>
-            </div>
-            
-            {profile.bio && (
-              <div className="profile-bio">
-                <h4>About Me</h4>
-                <p>{profile.bio}</p>
-              </div>
-            )}
+            <h2>Welcome, {profile.name || "User"}!</h2>
+            <button onClick={() => setIsEditing(true)} className="edit-profile-button">
+            View/Edit Profile Details
+            </button>
           </div>
         )}
         

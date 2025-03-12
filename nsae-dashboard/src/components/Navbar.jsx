@@ -1,9 +1,42 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 import logo from "../Images/Logo.jpg"; // Import the image
+import supabase from "../utils/supabaseClient"; // Ensure supabaseClient is properly imported
 
 function Navbar() {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  // Check for the current user session on initial load
+  useEffect(() => {
+    const session = supabase.auth.getSession();
+    if (session) {
+      setUser(session.user);
+    }
+
+    // Listen for changes in the auth session
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    // Cleanup listener on unmount
+    return () => {
+      // Removing the unsubscribe attempt
+      // Since it's not necessary for your requirements, you can leave this out
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null); // Clear the user state when logging out
+    navigate("/login"); // Navigate to the login page
+  };
+
   return (
     <nav className="navbar">
       <div className="hamburger-menu">
@@ -26,6 +59,12 @@ function Navbar() {
       </div>
       <ul className="navbar-links">
         <li><Link to="/Signup">Volunteer Now!</Link></li>
+        {user && (
+          <li className="user-info">
+            <span className="user-name">Welcome, {user.email}</span> {/* Display the logged-in user's email */}
+            <button onClick={handleLogout}>Logout</button> {/* Button to log out */}
+          </li>
+        )}
       </ul>
     </nav>
   );
