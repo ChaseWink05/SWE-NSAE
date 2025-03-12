@@ -3,6 +3,7 @@ import supabase from '../utils/supabaseClient';
 import reportService from '../services/ReportService';
 import '../styles/Volunteer.css';
 import ChatApp from "./ChatApp";
+import MeetingDetails from "./MeetingDetails";
 
 function Volunteers() {
   // Profile state
@@ -390,7 +391,7 @@ function Volunteers() {
     <ChatApp />
   </div>
 )}
-      
+      <MeetingDetails />
       <div className="volunteer-profile">
         <h2>Your Profile</h2>
         
