@@ -37,6 +37,11 @@ function Navbar() {
     navigate("/login"); // Navigate to the login page
   };
 
+  const extractNameFromEmail = (email) => {
+    const [name] = email.split("@");  // Take the part before '@' as the name
+    return name.charAt(0).toUpperCase() + name.slice(1);  // Capitalize the first letter
+  };
+
   return (
     <nav className="navbar">
       <div className="hamburger-menu">
@@ -59,10 +64,10 @@ function Navbar() {
       </div>
       <ul className="navbar-links">
         <li><Link to="/Signup">Volunteer Now!</Link></li>
-        <li><Link to="/donate" className="donate-link">Donate</Link></li> {/* Change Donate to a text link */}
+        <li><Link to="/donate" className="donate-link">Donate</Link> {/* Change Donate to a text link */}</li>
         {user && (
           <li className="user-info">
-            <span className="user-name">Welcome, {user.email}</span> {/* Display the logged-in user's email */}
+            <span className="user-name">Welcome, {extractNameFromEmail(user.email)}</span> {/* Display the user's name */}
             <button onClick={handleLogout}>Logout</button> {/* Button to log out */}
           </li>
         )}

@@ -5,6 +5,8 @@
   background-color: #2c3e50;
   padding: 40px 80px;
   position: relative;
+  width: 100%;  /* Ensures the navbar takes up full width */
+  box-sizing: border-box;  /* Include padding in total width calculation */
 }
 
 .navbar-logo {
@@ -14,6 +16,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-grow: 1;  /* Make sure the logo stays centered */
 }
 
 .navbar-logo img {
@@ -50,16 +53,22 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  white-space: nowrap; /* Prevent line breaks */
+  overflow: hidden; /* Prevent text from spilling out */
+  max-width: 200px;  /* Set a maximum width for the email */
+  text-overflow: ellipsis; /* Add ellipsis when the text overflows */
 }
 
 .user-name {
   color: rgb(255, 255, 255);
   font-size: 1rem;
   margin-bottom: 10px;
+  word-wrap: break-word; /* Ensure long words break */
+  overflow-wrap: break-word; /* Ensure long words break */
 }
-/* Hover effect for the user name */
+
 .user-name:hover {
-  color: #1abc9c; /* Set color to the same green as the other links */
+  color: #1abc9c;
 }
 
 .user-info button {
@@ -139,4 +148,3 @@
     display: flex;
   }
 }
-
