@@ -50,7 +50,6 @@ function Navbar() {
           <Link to="/about">About Us</Link>
           <Link to="/email">Contact Us</Link>
           <Link to="/login">Login</Link> {/* Ensure this link points to the correct route */}
-          
         </div>
       </div>
       <div className="navbar-logo">
@@ -60,6 +59,7 @@ function Navbar() {
       </div>
       <ul className="navbar-links">
         <li><Link to="/Signup">Volunteer Now!</Link></li>
+        <li><Link to="/donate" className="donate-link">Donate</Link></li> {/* Change Donate to a text link */}
         {user && (
           <li className="user-info">
             <span className="user-name">Welcome, {user.email}</span> {/* Display the logged-in user's email */}

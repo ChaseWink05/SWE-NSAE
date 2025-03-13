@@ -1,0 +1,52 @@
+.hr-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    text-align: center;
+  }
+  
+  .hr-header {
+    font-size: 32px;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+  }
+  
+  .hr-dashboard {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .donation-summary {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ecf0f1;
+    border-radius: 8px;
+  }
+  
+  .donation-amount {
+    font-size: 24px;
+    font-weight: bold;
+    color: #27ae60;
+  }
+  
+  .hr-login-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 20px;
+  }
+  
+  .hr-login-btn:hover {
+    background-color: #0056b3;
+  }
+  

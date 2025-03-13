@@ -3,6 +3,7 @@ import supabase from '../utils/supabaseClient';
 import reportService from '../services/ReportService';
 import '../styles/Caregiver.css';
 import ChatApp from "./ChatApp"; // Import the chat component
+import MeetingDetails from "./MeetingDetails";
 
 function Caregivers() {
   const [reports, setReports] = useState([]);
@@ -114,7 +115,7 @@ function Caregivers() {
           </p>
         </div>
       )}
-
+      <MeetingDetails />
       <div className="filter-header">
         <div className="filter-controls">
           <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>

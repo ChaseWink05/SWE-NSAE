@@ -16,6 +16,7 @@ import HR from "./components/HR";
 import Signup from "./components/Signup"; // Import the Signup component
 import EmailPage from "./components/EmailPage"; // Import the EmailPage component
 import ChatApp from "./components/ChatApp";
+import DonatePage from "./components/DonatePage";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path= "/hr" element={<HR />} />
           <Route path= "/email" element={<EmailPage />} />
           <Route path= "/ChatApp" element={<ChatApp />} />
+          <Route path="/donate" element={<DonatePage />} />
 
         </Routes>
         <Footer />
