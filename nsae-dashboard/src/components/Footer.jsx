@@ -11,7 +11,7 @@ function Footer() {
                 <p>📍 NSAE Office: 1 Main Street, Dreamland, DL 00000, ULTRA PLANET</p>
                 <p>📍 Safari Park: 2 Park Street, Dreamland, DL 00000, ULTRA PLANET</p>
                 <p>📧 Contact HR: <a href="mailto:hr@nsae.org">hr@nsae.org</a></p>
-                <h3>Our Partners</h3>
+                <h3>Thanks to our partners</h3>
             </div>
             <div className= "footer-images">
                 
