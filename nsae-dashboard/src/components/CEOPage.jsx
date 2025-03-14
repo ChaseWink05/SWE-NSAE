@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import supabase from "../utils/supabaseClient";
-import "../styles/CEOPage.css";
+import "../styles/CeoPage.css";
 
 function CEOPage() {
   const [meetingDetails, setMeetingDetails] = useState({
-    id: null, // To store the meeting ID for editing
+    id: null,
     time: "",
     place: "",
     topic: "",
+    emails: [],
   });
   const [message, setMessage] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [showPreviousMeetings, setShowPreviousMeetings] = useState(false); // Track if previous meetings are shown
+  const [userEmails, setUserEmails] = useState([]); // List of user emails
+  const [selectedEmails, setSelectedEmails] = useState([]); // Track selected emails
   const [meetingsList, setMeetingsList] = useState([]); // List of meetings to select from
-  const navigate = useNavigate();
+
+  // Fetch user emails from Supabase authentication user table
+  const fetchUserEmails = async () => {
+    const { data, error } = await supabase.auth.admin.listUsers();
+
+    if (error) {
+      console.error("Error fetching user emails:", error);
+      setMessage("❌ Failed to fetch user emails.");
+    } else {
+      setUserEmails(data.users.map((user) => user.email));
+    }
+  };
 
   // Fetch existing meetings on page load
   const fetchMeetings = async () => {
@@ -33,40 +46,51 @@ function CEOPage() {
 
   useEffect(() => {
     fetchMeetings(); // Fetch meetings when the component is mounted
+    fetchUserEmails(); // Fetch user emails when the component is mounted
   }, []);
 
-  const handleMeetingSubmit = async () => {
-    const { time, place, topic, id } = meetingDetails;
+  // Toggle email selection
+  const toggleEmailSelection = (email) => {
+    setSelectedEmails((prevSelectedEmails) =>
+      prevSelectedEmails.includes(email)
+        ? prevSelectedEmails.filter((selectedEmail) => selectedEmail !== email) // Deselect
+        : [...prevSelectedEmails, email] // Select
+    );
+  };
 
-    if (!time || !place || !topic) {
-      setMessage("❌ Please provide all fields (Time, Place, and Topic).");
+  // Function to handle meeting submit
+  const handleMeetingSubmit = async () => {
+    const { time, place, topic } = meetingDetails;
+
+    if (!time || !place || !topic || selectedEmails.length === 0) {
+      setMessage("❌ Please provide all fields (Time, Place, Topic, and Emails).");
       return;
     }
 
-    if (id) {
-      // If there's an id, update the existing meeting
+    if (meetingDetails.id) {
+      // Update existing meeting
       const { error } = await supabase
         .from("meetings")
-        .update({ time, place, topic })
-        .eq("id", id);
+        .update({ time, place, topic, emails: selectedEmails })
+        .eq("id", meetingDetails.id);
 
       if (error) {
-        console.error("Supabase error:", error);
-        setMessage("❌ Failed to update meeting: " + (error.message || "Unknown error"));
+        console.error("Error updating meeting:", error);
+        setMessage("❌ Failed to update meeting.");
       } else {
         setMessage("✅ Meeting updated successfully!");
         resetForm();
         fetchMeetings(); // Refresh meetings list after update
       }
     } else {
-      // If there's no id, create a new meeting
+      // Create new meeting
       const { error } = await supabase
         .from("meetings")
-        .insert([{ time, place, topic, created_at: new Date().toISOString() }]);
+        .insert([{ time, place, topic, emails: selectedEmails, created_at: new Date().toISOString() }]);
 
       if (error) {
-        console.error("Supabase error:", error);
-        setMessage("❌ Failed to save meeting: " + (error.message || "Unknown error"));
+        console.error("Error saving meeting:", error);
+        setMessage("❌ Failed to save meeting.");
       } else {
         setMessage("✅ Meeting created successfully!");
         resetForm();
@@ -77,7 +101,8 @@ function CEOPage() {
 
   // Function to reset the form
   const resetForm = () => {
-    setMeetingDetails({ id: null, time: "", place: "", topic: "" });
+    setMeetingDetails({ id: null, time: "", place: "", topic: "", emails: [] });
+    setSelectedEmails([]); // Reset selected emails
     setShowForm(false);
     setTimeout(() => setMessage(""), 3000);
   };
@@ -89,7 +114,9 @@ function CEOPage() {
       time: meeting.time,
       place: meeting.place,
       topic: meeting.topic,
+      emails: meeting.emails,
     });
+    setSelectedEmails(meeting.emails); // Set previously selected emails
     setShowForm(true); // Show form for editing
   };
 
@@ -102,90 +129,112 @@ function CEOPage() {
       setMessage("❌ Failed to delete meeting.");
     } else {
       setMessage("✅ Meeting deleted successfully!");
-      // Remove the deleted meeting from the list
-      setMeetingsList(meetingsList.filter((meeting) => meeting.id !== id));
+      setMeetingsList(meetingsList.filter((meeting) => meeting.id !== id)); // Remove deleted meeting
     }
 
-    setTimeout(() => setMessage(""), 3000); // Clear the message after 3 seconds
+    setTimeout(() => setMessage(""), 3000); // Clear message after 3 seconds
   };
 
   return (
     <div className="ceo-page">
       <h2 className="ceo-header">CEO Dashboard</h2>
 
-      {/* Combined Section for Create Meeting and View/Edit Previous Meeting */}
-      <div className="meeting-section">
-        {/* Create Meeting Button */}
-        <button
-          className="create-meeting-btn"
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? "Cancel" : "Create Meeting"}
-        </button>
+      {/* Create/Update Meeting Button */}
+      <button className="create-meeting-btn" onClick={() => setShowForm(!showForm)}>
+        {showForm ? "Cancel" : "Create Meeting"}
+      </button>
 
-        {/* Form for creating or editing meetings */}
-        {showForm && (
-          <div className="meeting-form">
-            <input
-              type="text"
-              placeholder="Time of Meeting"
-              value={meetingDetails.time}
-              onChange={(e) =>
-                setMeetingDetails({ ...meetingDetails, time: e.target.value })
-              }
-            />
-            <input
-              type="text"
-              placeholder="Place of Meeting"
-              value={meetingDetails.place}
-              onChange={(e) =>
-                setMeetingDetails({ ...meetingDetails, place: e.target.value })
-              }
-            />
-            <input
-              type="text"
-              placeholder="Topic of Meeting"
-              value={meetingDetails.topic}
-              onChange={(e) =>
-                setMeetingDetails({ ...meetingDetails, topic: e.target.value })
-              }
-            />
-            <button className="submit-meeting-btn" onClick={handleMeetingSubmit}>
-              {meetingDetails.id ? "Update Meeting" : "Save Meeting Details"}
-            </button>
+      {/* Form for creating or editing meetings */}
+      {showForm && (
+        <div className="meeting-form">
+          <input
+            type="text"
+            placeholder="Time of Meeting"
+            value={meetingDetails.time}
+            onChange={(e) =>
+              setMeetingDetails({ ...meetingDetails, time: e.target.value })
+            }
+          />
+          <input
+            type="text"
+            placeholder="Place of Meeting"
+            value={meetingDetails.place}
+            onChange={(e) =>
+              setMeetingDetails({ ...meetingDetails, place: e.target.value })
+            }
+          />
+          <input
+            type="text"
+            placeholder="Topic of Meeting"
+            value={meetingDetails.topic}
+            onChange={(e) =>
+              setMeetingDetails({ ...meetingDetails, topic: e.target.value })
+            }
+          />
+
+          {/* Display user emails as clickable options */}
+          <div className="email-selection">
+            <h3>Select Emails</h3>
+            <ul>
+              {userEmails.map((email) => (
+                <li
+                  key={email}
+                  onClick={() => toggleEmailSelection(email)}
+                  className={selectedEmails.includes(email) ? "selected" : ""}
+                  style={{ cursor: "pointer", padding: "5px", marginBottom: "5px" }}
+                >
+                  {email}
+                </li>
+              ))}
+            </ul>
           </div>
-        )}
 
-        {/* View/Edit Previous Meeting Button */}
-        <button
-          className="view-edit-meeting-btn"
-          onClick={() => setShowPreviousMeetings(!showPreviousMeetings)}
-        >
-          {showPreviousMeetings ? "Hide Previous Meetings" : "View/Edit Previous Meeting"}
-        </button>
-
-        {/* List of Previous Meetings */}
-        {showPreviousMeetings && (
-          <div className="meeting-list">
-            <h3>Existing Meetings</h3>
-            {meetingsList.length > 0 ? (
-              <ul>
-                {meetingsList.map((meeting) => (
-                  <li key={meeting.id}>
-                    <span>{meeting.time} - {meeting.place} - {meeting.topic}</span>
-                    <button onClick={() => handleEditMeeting(meeting)}>Edit</button>
-                    <button onClick={() => handleDeleteMeeting(meeting.id)}>Delete</button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No meetings found.</p>
-            )}
+          {/* Display selected emails */}
+          <div className="selected-emails">
+            <h4>Selected Emails:</h4>
+            <ul>
+              {selectedEmails.map((email, index) => (
+                <li key={index}>{email}</li>
+              ))}
+            </ul>
           </div>
-        )}
-      </div>
 
-      {/* Message should always be visible */}
+          {/* Submit meeting details */}
+          <button className="submit-meeting-btn" onClick={handleMeetingSubmit}>
+            {meetingDetails.id ? "Update Meeting" : "Save Meeting Details"}
+          </button>
+        </div>
+      )}
+
+      {/* View/Edit Previous Meetings Button */}
+      <button
+        className="view-edit-meeting-btn"
+        onClick={() => setShowPreviousMeetings(!showPreviousMeetings)}
+      >
+        {showPreviousMeetings ? "Hide Previous Meetings" : "View/Edit Previous Meeting"}
+      </button>
+
+      {/* List of Previous Meetings */}
+      {showPreviousMeetings && (
+        <div className="meeting-list">
+          <h3>Existing Meetings</h3>
+          {meetingsList.length > 0 ? (
+            <ul>
+              {meetingsList.map((meeting) => (
+                <li key={meeting.id}>
+                  <span>{meeting.time} - {meeting.place} - {meeting.topic}</span>
+                  <button onClick={() => handleEditMeeting(meeting)}>Edit</button>
+                  <button onClick={() => handleDeleteMeeting(meeting.id)}>Delete</button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No meetings found.</p>
+          )}
+        </div>
+      )}
+
+      {/* Message display */}
       {message && <p className="message">{message}</p>}
     </div>
   );
