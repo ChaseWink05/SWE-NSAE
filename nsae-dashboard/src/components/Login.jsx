@@ -46,6 +46,14 @@ function Login() {
           navigate("/caregivers");
         } else if (userEmail === "headcare@example.com") {
           navigate("/headcare");
+        } else if (userEmail === "bird-caregiver@nsae.com") {
+          navigate("/caregivers");
+        }else if (userEmail === "wildlife-caregiver@nsae.com") {
+          navigate("/caregivers");
+        }else if (userEmail === "mamal-caregiver@nase.com") {
+          navigate("/caregivers");
+        }else if (userEmail === "other-caregiver@nase.com") {
+          navigate("/caregivers");
         } else {
           navigate("/volunteer"); // Default route for other users
         }
@@ -83,6 +91,14 @@ function Login() {
     }else if (userEmail === "dog-caregiver@example.com") {
       navigate("/caregivers");
     }else if (userEmail === "cat-caregiver@example.com") {
+      navigate("/caregivers");
+    } else if (userEmail === "bird-caregiver@nsae.com") {
+      navigate("/caregivers");
+    }else if (userEmail === "wildlife-caregiver@nsae.com") {
+      navigate("/caregivers");
+    }else if (userEmail === "mamal-caregiver@nase.com") {
+      navigate("/caregivers");
+    }else if (userEmail === "other-caregiver@nase.com") {
       navigate("/caregivers");
     } else if (userEmail === "caregivers@example.com") {
       navigate("/caregivers");
