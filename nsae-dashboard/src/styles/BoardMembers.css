@@ -1,0 +1,100 @@
+/* Overall page structure */
+.board-members-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+  }
+  
+  .board-members-page h1 {
+    font-size: 32px;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #3498db;
+  }
+  
+  .meeting-details-section {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-bottom: 40px;
+  }
+  
+  .meeting-details-section h2 {
+    font-size: 24px;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .meeting-details-section h2::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 24px;
+    background-color: #3498db;
+    margin-right: 12px;
+    border-radius: 3px;
+  }
+  
+  .meeting-details .meeting-item {
+    margin-bottom: 20px;
+  }
+  
+  .meeting-details .meeting-item p {
+    margin: 5px 0;
+  }
+  
+  .chat-section {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-bottom: 40px;
+  }
+  
+  .chat-section h2 {
+    font-size: 24px;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .chat-section h2::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 24px;
+    background-color: #3498db;
+    margin-right: 12px;
+    border-radius: 3px;
+  }
+  
+  .chat-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chat-toggle-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .chat-toggle-button:hover {
+    background-color: #0056b3;
+  }

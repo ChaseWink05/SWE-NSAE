@@ -18,6 +18,7 @@ function Volunteers() {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showReportForm, setShowReportForm] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   
   // Reports state
   const [reports, setReports] = useState([]);
@@ -395,11 +396,21 @@ function Volunteers() {
   return (
     <div className="volunteer-page">
       <h1>Volunteer Dashboard</h1>
-      
-      <div className="volunteer-profile">
+      <button 
+        className="chat-toggle-button" 
+        onClick={() => setShowChat(prev => !prev)}
+      >
+        {showChat ? "Close Chat" : "Organization Chat"}
+      </button>
 
+      {showChat && (
+        <div className="chat-container">
+          <ChatApp />
+        </div>
+      )}
+      <div className="volunteer-profile">
         <h2>Your Profile</h2>
-        
+  
         {isEditing ? (
           <div className="edit-profile">
             <div className="form-group">
@@ -411,9 +422,7 @@ function Volunteers() {
                 onChange={handleChange} 
               />
             </div>
-            
-            
-            
+  
             <div className="form-group">
               <label>Home Town:</label>
               <input 
@@ -423,7 +432,7 @@ function Volunteers() {
                 onChange={handleChange} 
               />
             </div>
-            
+  
             <div className="form-group">
               <label>About Me:</label>
               <textarea 
@@ -432,15 +441,12 @@ function Volunteers() {
                 onChange={handleChange}
               />
             </div>
-            
+  
             <div className="form-group">
               <label>Profile Image:</label>
-              <input 
-                type="file" 
-                onChange={handleImageChange} 
-              />
+              <input type="file" onChange={handleImageChange} />
             </div>
-            
+  
             <div className="button-group">
               <button onClick={saveProfile} className="save-button">Save Profile</button>
               <button onClick={() => setIsEditing(false)} className="cancel-button">Cancel</button>
@@ -450,11 +456,11 @@ function Volunteers() {
           <div className="profile-display">
             <h2>Welcome, {profile.name || "User"}!</h2>
             <button onClick={() => setIsEditing(true)} className="edit-profile-button">
-            View/Edit Profile Details
+              View/Edit Profile Details
             </button>
           </div>
         )}
-        
+  
         <div className="volunteer-reports">
           <div className="reports-header">
             <h2>Stray Animal Reports</h2>
@@ -462,12 +468,15 @@ function Volunteers() {
               <button onClick={fetchReports} className="refresh-button">
                 Refresh Reports
               </button>
-              <button onClick={() => !editingReport && setShowReportForm(!showReportForm)} className="report-button">
+              <button 
+                onClick={() => !editingReport && setShowReportForm(!showReportForm)} 
+                className="report-button"
+              >
                 {showReportForm && !editingReport ? "Cancel Report" : "Report Stray Animal"}
               </button>
             </div>
           </div>
-          
+  
           {showReportForm && (
             <div className="report-form">
             <h3>{editingReport ? "Edit Animal Report" : "New Animal Report"}</h3>
@@ -526,7 +535,7 @@ function Volunteers() {
                   rows={3}
                 />
               </div>
-                            
+  
               <div className="form-group">
                 <label>Location:</label>
                 <input 
@@ -538,7 +547,7 @@ function Volunteers() {
                   placeholder="Street address, landmarks, etc."
                 />
               </div>
-              
+  
               <div className="form-group">
                 <label>Description:</label>
                 <textarea 
@@ -548,13 +557,10 @@ function Volunteers() {
                   placeholder="Animal color, size, behavior, etc."
                 />
               </div>
-              
+  
               <div className="form-group">
                 <label>Photo of Animal:</label>
-                <input 
-                  type="file" 
-                  onChange={handleReportImageChange} 
-                />
+                <input type="file" onChange={handleReportImageChange} />
                 {(editingReport?.imagePreview || newReport.imagePreview) && (
                   <img 
                     src={editingReport ? editingReport.imagePreview : newReport.imagePreview} 
@@ -570,7 +576,7 @@ function Volunteers() {
                   />
                 )}
               </div>
-              
+  
               <div className="button-group">
                 <button onClick={submitReport} className="submit-button">
                   {editingReport ? "Update Report" : "Submit Report"}
@@ -581,7 +587,7 @@ function Volunteers() {
               </div>
             </div>
           )}
-          
+  
           {isLoading ? (
             <div className="loading-indicator">
               <div className="loading-spinner"></div>
@@ -590,7 +596,7 @@ function Volunteers() {
           ) : (
             <div className="reports-list">
               <h3>Your Reports</h3>
-              
+  
               {reports.length === 0 ? (
                 <p>You haven't submitted any reports yet.</p>
               ) : (
@@ -604,7 +610,7 @@ function Volunteers() {
                       )}
                       <div className="report-details">
                         <h4>
-                          {report.animal_type.startsWith('Other:') 
+                          {report.animal_type.startsWith("Other:") 
                             ? report.animal_type 
                             : report.animal_type}
                         </h4>
@@ -619,21 +625,24 @@ function Volunteers() {
                         )}
                         <p><strong>Location:</strong> {report.location}</p>
                         <p><strong>Date:</strong> {new Date(report.created_at).toLocaleDateString()}</p>
-                        <p><strong>Status:</strong> <span className={`status-badge status-${(report.status || 'pending').toLowerCase()}`}>
-                          {report.status ? (report.status.charAt(0).toUpperCase() + report.status.slice(1)) : 'Pending'}
-                        </span></p>
-                        
+                        <p>
+                          <strong>Status:</strong> 
+                          <span className={`status-badge status-${(report.status || 'pending').toLowerCase()}`}>
+                            {report.status ? (report.status.charAt(0).toUpperCase() + report.status.slice(1)) : "Pending"}
+                          </span>
+                        </p>
+  
                         <div className="report-actions">
                           {(report.status === "pending" || !report.status) && (
                             <button onClick={() => startEditReport(report)} className="edit-report-button">
                               Edit
-                              </button>
-                            )}
-                            <button onClick={() => deleteReport(report.id, report.status)} className="delete-report-button">
-                              Delete
                             </button>
+                          )}
+                          <button onClick={() => deleteReport(report.id, report.status)} className="delete-report-button">
+                            Delete
+                          </button>
                         </div>
-                        
+  
                         {report.caregiver_notes && (
                           <div className="caregiver-feedback">
                             <p><strong>Caregiver Notes:</strong> {report.caregiver_notes}</p>

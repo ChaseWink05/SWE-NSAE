@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
+import "../styles/ChatApp.css"; // Import the CSS file
 
 // Supabase Setup
 const SUPABASE_URL = "https://ueswvkitrkkkmemrxpir.supabase.co";
@@ -111,27 +112,16 @@ function ChatApp() {
   }, []);
 
   return (
-    <div style={{ maxWidth: "600px", margin: "20px auto", textAlign: "center" }}>
+    <div className="chat-app">
       <h2>Organization Chat</h2>
 
       {/* Message Display */}
-      <div
-        style={{
-          border: "1px solid #ccc",
-          height: "300px",
-          overflowY: "auto",
-          padding: "10px",
-          background: "#f9f9f9",
-        }}
-      >
+      <div className="chat-messages">
         {messages.length > 0 ? (
           messages.map((msg, index) => (
             <div
               key={index}
-              style={{
-                textAlign: msg.sender === userEmail ? "right" : "left",
-                marginBottom: "10px",
-              }}
+              className={`chat-message ${msg.sender === userEmail ? "chat-message-right" : "chat-message-left"}`}
             >
               <strong>{msg.sender}:</strong>
               <p>{msg.text}</p>
@@ -143,19 +133,15 @@ function ChatApp() {
       </div>
 
       {/* Message Input */}
-      <input
-        type="text"
-        placeholder="Type a message..."
-        value={newMessage}
-        onChange={(e) => setNewMessage(e.target.value)}
-        style={{ width: "80%", padding: "5px", marginTop: "10px" }}
-      />
-      <button
-        onClick={sendMessage}
-        style={{ padding: "5px 10px", marginLeft: "5px" }}
-      >
-        Send
-      </button>
+      <div className="chat-input">
+        <input
+          type="text"
+          placeholder="Type a message..."
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+        />
+        <button onClick={sendMessage}>Send</button>
+      </div>
     </div>
   );
 }
