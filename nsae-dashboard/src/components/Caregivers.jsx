@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import supabase from '../utils/supabaseClient';
 import reportService from '../services/ReportService';
 import '../styles/Caregiver.css';
-import ChatApp from "./ChatApp"; // Import the chat component
+import ChatApp from "./ChatApp"; 
 import MeetingDetails from "./MeetingDetails";
 
 function Caregivers() {
@@ -157,6 +157,15 @@ function Caregivers() {
                 )}
                 <div className="report-summary">
                   <h3>{report.animal_type}</h3>
+                  {report.health_status && (
+                    <p className={`health-status ${report.health_status}`}>
+                      <strong>Health:</strong> 
+                      {report.health_status === 'healthy' ? ' Healthy' : 
+                      report.health_status === 'needs_attention' ? ' Needs Medical Attention' : 
+                      report.health_status === 'critical' ? ' Critical Condition' : 
+                      ' Unknown'}
+                    </p>
+                  )}
                   <p><strong>Location:</strong> {report.location}</p>
                   <p><strong>Date:</strong> {new Date(report.created_at).toLocaleDateString()}</p>
                   <p><strong>Status:</strong> <span className={`status-badge status-${(report.status || 'pending').toLowerCase()}`}>
@@ -179,9 +188,28 @@ function Caregivers() {
         {selectedReport && (
           <div className="report-detail">
             <h2>Report Details</h2>
+
             {selectedReport.image_url && (
               <img src={selectedReport.image_url} alt="Reported Animal" className="report-image-large" />
             )}
+
+              <div className="health-status-section">
+                  <h4>Health Status:</h4>
+                  <p className={`health-status ${selectedReport.health_status || 'unknown'}`}>
+                    {selectedReport.health_status === 'healthy' ? 'Healthy' : 
+                    selectedReport.health_status === 'needs_attention' ? 'Needs Medical Attention' : 
+                    selectedReport.health_status === 'critical' ? 'Critical Condition' : 
+                    'Status Not Reported'}
+                  </p>
+                </div>
+                
+                {/* Show medical needs if any */}
+                {selectedReport.medical_needs && (
+                  <div className="medical-needs-section">
+                    <h4>Medical Needs:</h4>
+                    <p>{selectedReport.medical_needs}</p>
+                  </div>
+                )}
             <p><strong>Location:</strong> {selectedReport.location}</p>
             <p><strong>Date Reported:</strong> {new Date(selectedReport.created_at).toLocaleString()}</p>
             <p><strong>Description:</strong> {selectedReport.description || 'No description provided'}</p>

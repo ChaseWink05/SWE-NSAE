@@ -254,4 +254,44 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   
-  
+  /* Health status indicators */
+.health-status {
+  display: inline-block;
+  line-height: 1.4;
+}
+
+.health-status.healthy {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.health-status.needs_attention {
+  color: #FF9800;
+  font-weight: bold;
+}
+
+.health-status.critical {
+  color: #F44336;
+  font-weight: bold;
+}
+
+.health-status.unknown {
+  color: #757575;
+  font-style: italic;
+}
+
+/* Detailed view styling */
+.health-status-section, 
+.medical-needs-section {
+  background: #f9f9f9;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.health-status-section h4,
+.medical-needs-section h4 {
+  margin-top: 0;
+  margin-bottom: 5px;
+  color: #333;
+}
