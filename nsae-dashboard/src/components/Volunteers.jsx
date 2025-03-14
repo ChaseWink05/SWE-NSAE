@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import supabase from '../utils/supabaseClient';
 import reportService from '../services/ReportService';
 import '../styles/Volunteer.css';
-import ChatApp from "./ChatApp";
-import MeetingDetails from "./MeetingDetails";
+import './ChatApp'
+import ChatApp from './ChatApp';
 
 function Volunteers() {
   // Profile state
@@ -18,7 +18,6 @@ function Volunteers() {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showReportForm, setShowReportForm] = useState(false);
-  const [showChat, setShowChat] = useState(false);
   
   // Reports state
   const [reports, setReports] = useState([]);
@@ -396,22 +395,9 @@ function Volunteers() {
   return (
     <div className="volunteer-page">
       <h1>Volunteer Dashboard</h1>
-
-      <button 
-  className="chat-toggle-button" 
-  onClick={() => setShowChat(prev => !prev)}
->
-  {showChat ? "Close Chat" : "Organization Chat"}
-</button>
-
-{/* Chat Window (Appears Below When Active) */}
-{showChat && (
-  <div className="chat-container">
-    <ChatApp />
-  </div>
-)}
-      <MeetingDetails />
+      
       <div className="volunteer-profile">
+
         <h2>Your Profile</h2>
         
         {isEditing ? (
