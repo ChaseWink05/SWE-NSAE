@@ -233,21 +233,6 @@ function HeadCaregivers() {
       
       </div>
 
-      {/* List of Meetings */}
-      <div className="meeting-list">
-        <h2>Upcoming Meetings</h2>
-        {meetingsList.length > 0 ? (
-          <ul>
-            {meetingsList.map((meeting) => (
-              <li key={meeting.id}>
-                <span>{meeting.time} - {meeting.place} - {meeting.topic}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No meetings found.</p>
-        )}
-      </div>
 
       {/* List of Meetings */}
       <div className="meeting-list">
