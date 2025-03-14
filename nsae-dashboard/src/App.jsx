@@ -17,6 +17,8 @@ import Signup from "./components/Signup"; // Import the Signup component
 import EmailPage from "./components/EmailPage"; // Import the EmailPage component
 import ChatApp from "./components/ChatApp";
 import DonatePage from "./components/DonatePage";
+import AboutUs from "./components/AboutUs.jsx";
+
 
 function App() {
   return (
@@ -27,7 +29,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/Home" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/signup" element={<Signup />} /> {/* Add the Signup route */}
+          <Route path="/signup" element={<Signup />} /> 
           <Route path="/login" element={<Login />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/ceo" element={<CEOPage />} />
@@ -41,7 +43,7 @@ function App() {
           <Route path= "/email" element={<EmailPage />} />
           <Route path= "/ChatApp" element={<ChatApp />} />
           <Route path="/donate" element={<DonatePage />} />
-
+          <Route path="/about" element={<AboutUs />} />
         </Routes>
         <Footer />
       </div>

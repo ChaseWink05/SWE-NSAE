@@ -92,12 +92,14 @@ function Caregivers() {
         specialization = 'Dog';
       } else if (email === 'cat-caregiver@example.com') {
         specialization = 'Cat';
-      } else if (email === 'bird-caregiver@example.com') {
+      } else if (email === 'bird-caregiver@nsae.com') {
         specialization = 'Bird';
-      } else if (email === 'smallmammal-caregiver@example.com') {
+      } else if (email === 'mammal-caregiver@nsae.com') {
         specialization = 'Small Mammal';
-      } else if (email === 'wildlife-caregiver@example.com') {
+      } else if (email === 'wildlife-caregiver@nsae.com') {
         specialization = 'Wildlife';
+      } else if (email === 'other-caregiver@nsae.com') {
+        specialization = 'Other';
       } else if (email === 'admin-caregiver@example.com') {
         specialization = 'all';
       } else {
