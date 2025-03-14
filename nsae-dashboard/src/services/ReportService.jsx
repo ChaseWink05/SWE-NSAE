@@ -73,7 +73,9 @@ export const reportService = {
           animal_type: reportData.animalType,
           location: reportData.location,
           description: reportData.description,
-          volunteer_id: user.id
+          volunteer_id: user.id,
+          health_status: reportData.healthStatus,
+          medical_needs: reportData.medicalNeeds
         })
         .select();
       

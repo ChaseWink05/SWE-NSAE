@@ -28,7 +28,9 @@ function Volunteers() {
     location: '',
     description: '',
     imageFile: null,
-    imagePreview: null
+    imagePreview: null,
+    healthStatus: '',
+    medicalNeeds: ''
   });
   const [editingReport, setEditingReport] = useState(null);
 
@@ -213,6 +215,11 @@ function Volunteers() {
         }));
       } else if (name === "otherAnimalType") {
         setEditingReport(prev => ({ ...prev, other_animal_type: value }));
+      }else if (name === "healthStatus") {
+          setEditingReport(prev => ({ ...prev, health_status: value }));
+        }
+        else if (name === "medicalNeeds") {
+          setEditingReport(prev => ({ ...prev, medical_needs: value }));
       } else {
         setEditingReport(prev => ({ ...prev, [name]: value }));
       }
@@ -259,13 +266,17 @@ function Volunteers() {
         console.log("Updating report:", editingReport.id, {
           animalType: finalAnimalType,
           location: editingReport.location,
-          description: editingReport.description
+          description: editingReport.description,
+          healthStatus: editingReport.health_status,
+          medicalNeeds: editingReport.medical_needs
         });
         
         await reportService.updateReport(editingReport.id, {
           animalType: finalAnimalType,
           location: editingReport.location,
-          description: editingReport.description
+          description: editingReport.description,
+          healthStatus: editingReport.health_status,
+          medicalNeeds: editingReport.medical_needs
         });
         
         alert("Report updated successfully!");
@@ -286,7 +297,9 @@ function Volunteers() {
           animalType: finalAnimalType,
           location: newReport.location,
           description: newReport.description,
-          imageFile: newReport.imageFile
+          imageFile: newReport.imageFile,
+          healthStatus: newReport.healthStatus,
+          medicalNeeds: newReport.medicalNeeds
         });
         
         alert("Report submitted successfully!");
@@ -299,7 +312,9 @@ function Volunteers() {
         location: '',
         description: '',
         imageFile: null,
-        imagePreview: null
+        imagePreview: null,
+        healthStatus: '',
+        medicalNeeds: ''
       });
       
       setEditingReport(null);
@@ -330,7 +345,9 @@ function Volunteers() {
       animal_type: animalType,
       other_animal_type: otherAnimalType,
       location: report.location,
-      description: report.description
+      description: report.description,
+      healthStatus: report.health_status,
+      medicalNeeds: report.medical_needs,
     });
     
     setShowReportForm(true);
@@ -370,7 +387,9 @@ function Volunteers() {
       location: '',
       description: '',
       imageFile: null,
-      imagePreview: null
+      imagePreview: null,
+      healthStatus: '',
+      medicalNeeds: ''
     });
   };
 
@@ -465,36 +484,61 @@ function Volunteers() {
           
           {showReportForm && (
             <div className="report-form">
-              <h3>{editingReport ? "Edit Animal Report" : "New Animal Report"}</h3>
-              
-              <div className="form-group">
-                <label>Animal Type:</label>
+            <h3>{editingReport ? "Edit Animal Report" : "New Animal Report"}</h3>
+            
+            <div className="form-group">
+              <label>Animal Type:</label>
+              <select
+                name="animalType"
+                value={editingReport ? editingReport.animal_type : newReport.animalType}
+                onChange={handleReportChange}
+                className="animal-select"
+                required
+              >
+                <option value="">-- Select Animal Type --</option>
+                {animalOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              {(editingReport?.animal_type === 'Other' || newReport.animalType === 'Other') && (
+                <div className="form-group other-animal">
+                  <label>Please specify:</label>
+                  <input
+                    type="text"
+                    name="otherAnimalType"
+                    value={editingReport ? editingReport.other_animal_type || '' : newReport.otherAnimalType || ''}
+                    onChange={handleReportChange}
+                    placeholder="Enter animal type"
+                  />
+                </div>
+              )}
+            </div>
+            <div className="form-group">
+                <label>Animal Health Status:</label>
                 <select
-                  name="animalType"
-                  value={editingReport ? editingReport.animal_type : newReport.animalType}
+                  name="healthStatus"
+                  value={editingReport ? editingReport.health_status || '' : newReport.healthStatus}
                   onChange={handleReportChange}
-                  className="animal-select"
                   required
                 >
-                  <option value="">-- Select Animal Type --</option>
-                  {animalOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
+                  <option value="">-- Select Health Status --</option>
+                  <option value="healthy">Healthy</option>
+                  <option value="needs_attention">Needs Medical Attention</option>
+                  <option value="critical">Critical Condition</option>
                 </select>
-                {editingReport?.animal_type === 'Other' || newReport.animalType === 'Other' ? (
-                  <div className="form-group other-animal">
-                    <label>Please specify:</label>
-                    <input
-                      type="text"
-                      name="otherAnimalType"
-                      value={editingReport ? editingReport.other_animal_type || '' : newReport.otherAnimalType || ''}
-                      onChange={handleReportChange}
-                      placeholder="Enter animal type"
-                    />
-                  </div>
-                ) : null}
+              </div>
+
+              <div className="form-group">
+                <label>Medical Needs (if any):</label>
+                <textarea
+                  name="medicalNeeds"
+                  value={editingReport ? editingReport.medical_needs || '' : newReport.medicalNeeds}
+                  onChange={handleReportChange}
+                  placeholder="Describe any medical needs or concerns..."
+                  rows={3}
+                />
               </div>
                             
               <div className="form-group">
@@ -578,6 +622,15 @@ function Volunteers() {
                             ? report.animal_type 
                             : report.animal_type}
                         </h4>
+                        {report.health_status && (
+                        <p className={`health-status ${report.health_status}`}>
+                            <strong>Health:</strong> 
+                            {report.health_status === 'healthy' ? ' Healthy' : 
+                            report.health_status === 'needs_attention' ? ' Needs Medical Attention' : 
+                            report.health_status === 'critical' ? ' Critical Condition' : 
+                            ' Unknown'}
+                        </p>
+                        )}
                         <p><strong>Location:</strong> {report.location}</p>
                         <p><strong>Date:</strong> {new Date(report.created_at).toLocaleDateString()}</p>
                         <p><strong>Status:</strong> <span className={`status-badge status-${(report.status || 'pending').toLowerCase()}`}>

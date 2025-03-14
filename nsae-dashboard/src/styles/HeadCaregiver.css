@@ -1,0 +1,364 @@
+/* HeadCaregiver.css */
+.headcaregiver-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .role-description {
+    background-color: #e1f5fe;
+    padding: 15px;
+    border-left: 4px solid #03a9f4;
+    margin-bottom: 20px;
+    border-radius: 0 4px 4px 0;
+  }
+  
+  .filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .filter-controls {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .filter-controls button {
+    background: #f0f0f0;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+  
+  .filter-controls button.active {
+    background: #4caf50;
+    color: white;
+  }
+  
+  .refresh-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .reports-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  .reports-list {
+    height: 75vh;
+    overflow-y: auto;
+    padding-right: 10px;
+  }
+  
+  .report-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .report-card.selected {
+    border-color: #4caf50;
+    background-color: #f9fff9;
+  }
+  
+  .report-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .vertical-layout {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .image-container {
+    width: 100%;
+    max-height: 180px;
+    overflow: hidden;
+    border-radius: 6px;
+    margin-bottom: 10px;
+  }
+  
+  .report-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .animal-type-tag {
+    display: inline-block;
+    background-color: #e1f5fe;
+    color: #0288d1;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+  
+  .status-approved {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  .report-detail {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: white;
+    position: sticky;
+    top: 20px;
+  }
+  
+  .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .report-image-large {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    margin-bottom: 20px;
+    border-radius: 6px;
+  }
+  
+  .report-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .info-item {
+    margin-bottom: 10px;
+  }
+  
+  .label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 3px;
+    color: #555;
+  }
+  
+  .review-controls {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form-group textarea {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .approve-button, .reject-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .approve-button {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .reject-button {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .close-button {
+    margin-top: 20px;
+    padding: 8px 16px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .danger-zone {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #fff5f5;
+    border: 1px solid #ffcccc;
+    border-radius: 4px;
+  }
+  
+  .danger-zone h4 {
+    color: #d32f2f;
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+  
+  .delete-button {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .confirm-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .confirm-dialog {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+  }
+  
+  .confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .confirm-delete {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .cancel-delete {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+  }
+  
+  .loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  /* Health status badges */
+.health-status-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  margin-left: 8px;
+  font-size: 0.8rem;
+  vertical-align: middle;
+}
+
+.health-status-badge.healthy {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.health-status-badge.needs_attention {
+  background-color: #FF9800;
+  color: white;
+}
+
+.health-status-badge.critical {
+  background-color: #F44336;
+  color: white;
+}
+
+/* Health status in details */
+.health-status.healthy {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.health-status.needs_attention {
+  color: #FF9800;
+  font-weight: bold;
+}
+
+.health-status.critical {
+  color: #F44336;
+  font-weight: bold;
+}
+
+.health-status.unknown {
+  color: #757575;
+  font-style: italic;
+}
