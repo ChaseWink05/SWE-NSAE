@@ -17,6 +17,23 @@ function CEOPage() {
   const [selectedEmails, setSelectedEmails] = useState([]); // Track selected emails
   const [meetingsList, setMeetingsList] = useState([]); // List of meetings to select from
 
+  const predefinedEmails = [
+    "ceo@example.com",
+    "handler@example.com",
+    "volunteer@example.com",
+    "boardmember@example.com",
+    "reptile-caregiver@example.com",
+    "hr@example.com",
+    "dog-caregiver@example.com",
+    "cat-caregiver@example.com",
+    "caregivers@example.com",
+    "headcare@example.com",
+    "bird-caregiver@nsae.com",
+    "wildlife-caregiver@nsae.com",
+    "mamal-caregiver@nase.com",
+    "other-caregiver@nase.com"
+  ];
+
   // Fetch user emails from Supabase authentication user table
   const fetchUserEmails = async () => {
     const { data, error } = await supabase.auth.admin.listUsers();
@@ -56,6 +73,12 @@ function CEOPage() {
         ? prevSelectedEmails.filter((selectedEmail) => selectedEmail !== email) // Deselect
         : [...prevSelectedEmails, email] // Select
     );
+  };
+
+  // Select all emails except predefined ones
+  const selectAllEmails = () => {
+    const filteredEmails = userEmails.filter(email => !predefinedEmails.includes(email));
+    setSelectedEmails(filteredEmails);
   };
 
   // Function to handle meeting submit
@@ -175,6 +198,7 @@ function CEOPage() {
           {/* Display user emails as clickable options */}
           <div className="email-selection">
             <h3>Select Emails</h3>
+            <button onClick={selectAllEmails} className="select-all-btn">Select All Volunteers</button>
             <ul>
               {userEmails.map((email) => (
                 <li
