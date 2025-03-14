@@ -229,10 +229,7 @@ function HeadCaregivers() {
           {showChat ? "Close Chat" : "Organization Chat"}
         </button>
 
-        {/* Chat Toggle Button */}
-        <button className="chat-toggle-button" onClick={() => setShowChat(prev => !prev)}>
-          {showChat ? "Close Chat" : "Organization Chat"}
-        </button>
+      
       
       </div>
 
