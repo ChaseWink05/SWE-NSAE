@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import supabase from '../utils/supabaseClient';
 import { reportService } from '../services/ReportService';
 import '../styles/HeadCaregiver.css';
+import ChatApp from "./ChatApp"; 
 
 function HeadCaregivers() {
   const [reports, setReports] = useState([]);
@@ -15,6 +16,8 @@ function HeadCaregivers() {
   const [meetingsList, setMeetingsList] = useState([]); // List of meetings to display
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
+  const [showChat, setShowChat] = useState(false);
+
 
   // Check for the current user session on initial load
   useEffect(() => {
@@ -220,6 +223,30 @@ function HeadCaregivers() {
         <button className='refresh-button' onClick={fetchReports}>
           Refresh
         </button>
+        
+        {/* Chat Toggle Button */}
+        <button className="chat-toggle-button" onClick={() => setShowChat(prev => !prev)}>
+          {showChat ? "Close Chat" : "Organization Chat"}
+        </button>
+
+      
+      
+      </div>
+
+      {/* List of Meetings */}
+      <div className="meeting-list">
+        <h2>Upcoming Meetings</h2>
+        {meetingsList.length > 0 ? (
+          <ul>
+            {meetingsList.map((meeting) => (
+              <li key={meeting.id}>
+                <span>{meeting.time} - {meeting.place} - {meeting.topic}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No meetings found.</p>
+        )}
       </div>
 
       {/* List of Meetings */}
@@ -286,6 +313,11 @@ function HeadCaregivers() {
             )}
           </div>
 
+            {/* Chat Window Appears Next to Reports */}
+            {showChat && (<div className="chat-container">
+                  <ChatApp />
+                      </div>
+                    )}
           {selectedReport && (
             <div className="report-detail">
               <h2>Report Details</h2>
