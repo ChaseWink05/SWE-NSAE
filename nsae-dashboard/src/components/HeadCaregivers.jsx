@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import supabase from '../utils/supabaseClient';
 import { reportService } from '../services/ReportService';
 import '../styles/HeadCaregiver.css';
+import ChatApp from "./ChatApp"; 
 
 function HeadCaregivers() {
   const [reports, setReports] = useState([]);
@@ -12,6 +13,8 @@ function HeadCaregivers() {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [reportToDelete, setReportToDelete] = useState(null);
   const [userEmails, setUserEmails] = useState({});
+  const [showChat, setShowChat] = useState(false);
+
   
 
   
@@ -171,6 +174,12 @@ function HeadCaregivers() {
         <button className='refresh-button' onClick={fetchReports}>
           Refresh
         </button>
+
+        {/* Chat Toggle Button */}
+        <button className="chat-toggle-button" onClick={() => setShowChat(prev => !prev)}>
+          {showChat ? "Close Chat" : "Organization Chat"}
+        </button>
+      
       </div>
 
       {isLoading ? (
@@ -221,6 +230,11 @@ function HeadCaregivers() {
             )}
           </div>
 
+            {/* Chat Window Appears Next to Reports */}
+            {showChat && (<div className="chat-container">
+                  <ChatApp />
+                      </div>
+                    )}
           {selectedReport && (
             <div className="report-detail">
               <h2>Report Details</h2>
