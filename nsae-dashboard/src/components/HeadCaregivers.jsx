@@ -12,14 +12,63 @@ function HeadCaregivers() {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [reportToDelete, setReportToDelete] = useState(null);
   const [userEmails, setUserEmails] = useState({});
-  
+  const [meetingsList, setMeetingsList] = useState([]); // List of meetings to display
+  const [message, setMessage] = useState("");
+  const [user, setUser] = useState(null);
 
-  
+  // Check for the current user session on initial load
+  useEffect(() => {
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setUser(session.user);
+      }
+    };
+
+    getSession();
+
+    // Listen for changes in the auth session
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  // Fetch existing meetings on page load
+  const fetchMeetings = async () => {
+    const { data, error } = await supabase
+      .from("meetings")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching meetings:", error);
+      setMessage("❌ Failed to fetch meetings.");
+    } else {
+      // Filter meetings based on the user's email
+      const filteredMeetings = data.filter(meeting => meeting.emails.includes(user.email));
+      setMeetingsList(filteredMeetings);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchMeetings(); // Fetch meetings when the user is set
+    }
+  }, [user]);
+
   // Initialize data on component mount
   useEffect(() => {
     fetchReports();
   }, []);
-  
+
   // Format user display name
   const formatUserName = (userId, role = '') => {
     // First check if we have this user's email in our state
@@ -171,6 +220,22 @@ function HeadCaregivers() {
         <button className='refresh-button' onClick={fetchReports}>
           Refresh
         </button>
+      </div>
+
+      {/* List of Meetings */}
+      <div className="meeting-list">
+        <h2>Upcoming Meetings</h2>
+        {meetingsList.length > 0 ? (
+          <ul>
+            {meetingsList.map((meeting) => (
+              <li key={meeting.id}>
+                <span>{meeting.time} - {meeting.place} - {meeting.topic}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No meetings found.</p>
+        )}
       </div>
 
       {isLoading ? (

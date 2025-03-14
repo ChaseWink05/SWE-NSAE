@@ -16,6 +16,57 @@ function Caregivers() {
     email: '',
     specialization: null
   });
+  const [meetingsList, setMeetingsList] = useState([]); // List of meetings to display
+  const [message, setMessage] = useState("");
+  const [user, setUser] = useState(null);
+
+  // Check for the current user session on initial load
+  useEffect(() => {
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setUser(session.user);
+      }
+    };
+
+    getSession();
+
+    // Listen for changes in the auth session
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  // Fetch existing meetings on page load
+  const fetchMeetings = async () => {
+    const { data, error } = await supabase
+      .from("meetings")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching meetings:", error);
+      setMessage("❌ Failed to fetch meetings.");
+    } else {
+      // Filter meetings based on the user's email
+      const filteredMeetings = data.filter(meeting => meeting.emails.includes(user.email));
+      setMeetingsList(filteredMeetings);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchMeetings(); // Fetch meetings when the user is set
+    }
+  }, [user]);
 
   useEffect(() => {
     checkCaregiver();
@@ -115,7 +166,7 @@ function Caregivers() {
           </p>
         </div>
       )}
-      <MeetingDetails />
+      <MeetingDetails meetingsList={meetingsList} />
       <div className="filter-header">
         <div className="filter-controls">
           <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>
