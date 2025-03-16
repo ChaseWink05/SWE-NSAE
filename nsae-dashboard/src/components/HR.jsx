@@ -11,6 +11,33 @@ function HR() {
   const [meetingsList, setMeetingsList] = useState([]); // List of meetings to display
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
+  const [showForm, setShowForm] = useState(false); // Track if the form is shown
+  const [meetingDetails, setMeetingDetails] = useState({
+    id: null,
+    time: "",
+    place: "",
+    topic: "",
+    emails: [],
+  });
+  const [userEmails, setUserEmails] = useState([]); // List of user emails
+  const [selectedEmails, setSelectedEmails] = useState([]); // Track selected emails
+
+  const predefinedEmails = [
+    "ceo@example.com",
+    "handler@example.com",
+    "volunteer@example.com",
+    "boardmember@example.com",
+    "reptile-caregiver@example.com",
+    "hr@example.com",
+    "dog-caregiver@example.com",
+    "cat-caregiver@example.com",
+    "caregivers@example.com",
+    "headcare@example.com",
+    "bird-caregiver@nsae.com",
+    "wildlife-caregiver@nsae.com",
+    "mamal-caregiver@nase.com",
+    "other-caregiver@nase.com"
+  ];
 
   // Check for the current user session on initial load
   useEffect(() => {
@@ -59,6 +86,114 @@ function HR() {
       fetchMeetings(); // Fetch meetings when the user is set
     }
   }, [user]);
+
+  // Fetch user emails from Supabase authentication user table
+  const fetchUserEmails = async () => {
+    const { data, error } = await supabase.auth.admin.listUsers();
+
+    if (error) {
+      console.error("Error fetching user emails:", error);
+      setMessage("❌ Failed to fetch user emails.");
+    } else {
+      setUserEmails(data.users.map((user) => user.email));
+    }
+  };
+
+  useEffect(() => {
+    fetchUserEmails(); // Fetch user emails when the component is mounted
+  }, []);
+
+  // Toggle email selection
+  const toggleEmailSelection = (email) => {
+    setSelectedEmails((prevSelectedEmails) =>
+      prevSelectedEmails.includes(email)
+        ? prevSelectedEmails.filter((selectedEmail) => selectedEmail !== email) // Deselect
+        : [...prevSelectedEmails, email] // Select
+    );
+  };
+
+  // Select all emails except predefined ones
+  const selectAllEmails = () => {
+    const filteredEmails = userEmails.filter(email => !predefinedEmails.includes(email));
+    setSelectedEmails(filteredEmails);
+  };
+
+  // Function to handle meeting submit
+  const handleMeetingSubmit = async () => {
+    const { time, place, topic } = meetingDetails;
+
+    if (!time || !place || !topic || selectedEmails.length === 0) {
+      setMessage("❌ Please provide all fields (Time, Place, Topic, and Emails).");
+      return;
+    }
+
+    if (meetingDetails.id) {
+      // Update existing meeting
+      const { error } = await supabase
+        .from("meetings")
+        .update({ time, place, topic, emails: selectedEmails })
+        .eq("id", meetingDetails.id);
+
+      if (error) {
+        console.error("Error updating meeting:", error);
+        setMessage("❌ Failed to update meeting.");
+      } else {
+        setMessage("✅ Meeting updated successfully!");
+        resetForm();
+        fetchMeetings(); // Refresh meetings list after update
+      }
+    } else {
+      // Create new meeting
+      const { error } = await supabase
+        .from("meetings")
+        .insert([{ time, place, topic, emails: selectedEmails, created_at: new Date().toISOString() }]);
+
+      if (error) {
+        console.error("Error saving meeting:", error);
+        setMessage("❌ Failed to save meeting.");
+      } else {
+        setMessage("✅ Meeting created successfully!");
+        resetForm();
+        fetchMeetings(); // Refresh meetings list after creation
+      }
+    }
+  };
+
+  // Function to reset the form
+  const resetForm = () => {
+    setMeetingDetails({ id: null, time: "", place: "", topic: "", emails: [] });
+    setSelectedEmails([]); // Reset selected emails
+    setShowForm(false);
+    setTimeout(() => setMessage(""), 3000);
+  };
+
+  // Function to handle editing a meeting
+  const handleEditMeeting = (meeting) => {
+    setMeetingDetails({
+      id: meeting.id,
+      time: meeting.time,
+      place: meeting.place,
+      topic: meeting.topic,
+      emails: meeting.emails,
+    });
+    setSelectedEmails(meeting.emails); // Set previously selected emails
+    setShowForm(true); // Show form for editing
+  };
+
+  // Function to delete a meeting
+  const handleDeleteMeeting = async (id) => {
+    const { error } = await supabase.from("meetings").delete().eq("id", id);
+
+    if (error) {
+      console.error("Error deleting meeting:", error);
+      setMessage("❌ Failed to delete meeting.");
+    } else {
+      setMessage("✅ Meeting deleted successfully!");
+      setMeetingsList(meetingsList.filter((meeting) => meeting.id !== id)); // Remove deleted meeting
+    }
+
+    setTimeout(() => setMessage(""), 3000); // Clear message after 3 seconds
+  };
 
   // Fetch total donations from the donations table
   useEffect(() => {
@@ -127,6 +262,74 @@ function HR() {
           Login to Supabase
         </button>
       </div>
+
+      {/* Create/Update Meeting Button */}
+      <button className="create-meeting-btn" onClick={() => setShowForm(!showForm)}>
+        {showForm ? "Cancel" : "Create Meeting"}
+      </button>
+
+      {/* Form for creating or editing meetings */}
+      {showForm && (
+        <div className="meeting-form">
+          <input
+            type="text"
+            placeholder="Time of Meeting"
+            value={meetingDetails.time}
+            onChange={(e) =>
+              setMeetingDetails({ ...meetingDetails, time: e.target.value })
+            }
+          />
+          <input
+            type="text"
+            placeholder="Place of Meeting"
+            value={meetingDetails.place}
+            onChange={(e) =>
+              setMeetingDetails({ ...meetingDetails, place: e.target.value })
+            }
+          />
+          <input
+            type="text"
+            placeholder="Topic of Meeting"
+            value={meetingDetails.topic}
+            onChange={(e) =>
+              setMeetingDetails({ ...meetingDetails, topic: e.target.value })
+            }
+          />
+
+          {/* Display user emails as clickable options */}
+          <div className="email-selection">
+            <h3>Select Emails</h3>
+            <button onClick={selectAllEmails} className="select-all-btn">Select All Volunteers</button>
+            <ul>
+              {userEmails.map((email) => (
+                <li
+                  key={email}
+                  onClick={() => toggleEmailSelection(email)}
+                  className={selectedEmails.includes(email) ? "selected" : ""}
+                  style={{ cursor: "pointer", padding: "5px", marginBottom: "5px" }}
+                >
+                  {email}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Display selected emails */}
+          <div className="selected-emails">
+            <h4>Selected Emails:</h4>
+            <ul>
+              {selectedEmails.map((email, index) => (
+                <li key={index}>{email}</li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Submit meeting details */}
+          <button className="submit-meeting-btn" onClick={handleMeetingSubmit}>
+            {meetingDetails.id ? "Update Meeting" : "Save Meeting Details"}
+          </button>
+        </div>
+      )}
 
       {/* List of Meetings */}
       <div className="meeting-list">
