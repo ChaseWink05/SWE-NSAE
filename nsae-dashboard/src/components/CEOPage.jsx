@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import supabase from "../utils/supabaseClient";
 import "../styles/CeoPage.css";
+import ChatApp from "./ChatApp";
 
 function CEOPage() {
   const [meetingDetails, setMeetingDetails] = useState({
@@ -16,6 +17,7 @@ function CEOPage() {
   const [userEmails, setUserEmails] = useState([]); // List of user emails
   const [selectedEmails, setSelectedEmails] = useState([]); // Track selected emails
   const [meetingsList, setMeetingsList] = useState([]); // List of meetings to select from
+  const [showChat, setShowChat] = useState(false);
 
   // Fetch user emails from Supabase authentication user table
   const fetchUserEmails = async () => {
@@ -138,7 +140,17 @@ function CEOPage() {
   return (
     <div className="ceo-page">
       <h2 className="ceo-header">CEO Dashboard</h2>
+    
+        <button className="chat-toggle-button" onClick={() => setShowChat(prev => !prev)}>
+          {showChat ? "Close Chat" : "Organization Chat"}
+        </button>
 
+        {/* Chat Window */}
+        {showChat && (
+          <div className="chat-container">
+            <ChatApp />
+          </div>
+        )}
       {/* Create/Update Meeting Button */}
       <button className="create-meeting-btn" onClick={() => setShowForm(!showForm)}>
         {showForm ? "Cancel" : "Create Meeting"}
