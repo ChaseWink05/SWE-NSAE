@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import supabase from "../utils/supabaseClient"; 
 import "../styles/BoardMembers.css";
+import './ChatApp'
+import ChatApp from './ChatApp';
 
 function BoardMembers() {
   const [totalDonations, setTotalDonations] = useState(0);
@@ -11,6 +13,7 @@ function BoardMembers() {
   const [meetingsList, setMeetingsList] = useState([]); // List of meetings to display
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
+  const [showChat, setShowChat] = useState(false);
 
   // Check for the current user session on initial load
   useEffect(() => {
@@ -139,6 +142,19 @@ function BoardMembers() {
           <p>No meetings found.</p>
         )}
       </div>
+      {message && <p className="message">{message}</p>}
+                  <button 
+                    className="chat-toggle-button" 
+                    onClick={() => setShowChat(prev => !prev)}
+                  >
+                    {showChat ? "Close Chat" : "Organization Chat"}
+                  </button>
+            
+                  {showChat && (
+                    <div className="chat-container">
+                      <ChatApp />
+                    </div>
+                  )}
 
       {/* Animal Filter Dropdown */}
       <div className="animal-filter">

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import supabase from "../utils/supabaseClient"; 
 import "../styles/HR.css";
+import './ChatApp'
+import ChatApp from './ChatApp';
 
 function HR() {
   const [totalDonations, setTotalDonations] = useState(0);
@@ -21,6 +23,7 @@ function HR() {
   });
   const [userEmails, setUserEmails] = useState([]); // List of user emails
   const [selectedEmails, setSelectedEmails] = useState([]); // Track selected emails
+  const [showChat, setShowChat] = useState(false);
 
   const predefinedEmails = [
     "ceo@example.com",
@@ -346,6 +349,19 @@ function HR() {
           <p>No meetings found.</p>
         )}
       </div>
+      {message && <p className="message">{message}</p>}
+            <button 
+              className="chat-toggle-button" 
+              onClick={() => setShowChat(prev => !prev)}
+            >
+              {showChat ? "Close Chat" : "Organization Chat"}
+            </button>
+      
+            {showChat && (
+              <div className="chat-container">
+                <ChatApp />
+              </div>
+            )}
 
       {/* Animal Filter Dropdown */}
       <div className="animal-filter">
