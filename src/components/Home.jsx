@@ -33,7 +33,7 @@ function Home() {
         <h3>Contact Information</h3>
         <p>📍 NSAE Office: 1 Main Street, Dreamland, DL 00000, ULTRA PLANET</p>
         <p>📍 Safari Park: 2 Park Street, Dreamland, DL 00000, ULTRA PLANET</p>
-        <p>📧 Contact HR: <a href="mailto:hr@nsae.org">hr@nsae.org</a></p>
+        <Link to="/email"className="button">Contact Us</Link>
         
         <Link to="/signup" className="button">Become a Volunteer</Link>
         <Link to="/login" className="button">Login</Link>
