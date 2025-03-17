@@ -3,10 +3,8 @@ import '../styles/AboutUs.css';
 import heisneberg from '../Images/Heisenberg.jpg';
 import jesse from '../Images/Jesse.png';
 import gus from '../Images/Gus.png';
-import mike from '../Images/Mike.png';
 import saul from '../Images/SaulGoodMan.png';
-import hank from '../Images/Hank.png';
-import { Link } from "react-router-dom";
+import hank from '../Images/hank.png';
 
 function AboutUs() {
   // Sample data for CEO and board members
