@@ -23,6 +23,23 @@ function DonatePage() {
       return;
     }
 
+    // Check if the expiration date is "08/18"
+    if (expiryDate === "08/18") {
+      alert("This card is expired.");
+      return;
+    }
+
+    // Check if the expiration date is before today
+    const [expMonth, expYear] = expiryDate.split("/").map(Number);
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear() % 100; // Get last two digits of the current year
+    const currentMonth = currentDate.getMonth() + 1; // Months are zero-based
+
+    if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
+      alert("This card is expired.");
+      return;
+    }
+
     setIsLoading(true);
     const donationAmount = parseFloat(amount);
     if (isNaN(donationAmount) || donationAmount <= 0) {

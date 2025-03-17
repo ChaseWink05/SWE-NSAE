@@ -14,13 +14,19 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // Custom Role Map
 // -------------------
 const emailToRole = {
-  "ceo@example.com": "CEO",
-  "boardmember@example.com": "Board Member",
-  "headcare@example.com": "Head Caregiver",
-  "reptile-caregiver@example.com": "Caregiver",
-  "dog-caregiver@example.com": "Caregiver",
-  "cat-caregiver@example.com": "Caregiver",
-  "hr@example.com":"HR"
+    "ceo@example.com" : "CEO",
+    "volunteer@example.com": "Volunteer",
+    "boardmember@example.com": "Board Member",
+    "reptile-caregiver@example.com": "Caregiver",
+    "hr@example.com": "HR",
+    "dog-caregiver@example.com": "Caregiver",
+    "cat-caregiver@example.com": "Caregiver",
+    "caregivers@example.com" : "Caregiver",
+    "headcare@example.com": "Head Caregiver",
+    "bird-caregiver@nsae.com" : "Caregiver",
+    "wildlife-caregiver@nsae.com": "Caregiver",
+    "mamal-caregiver@nase.com": "Caregiver",
+    "other-caregiver@nase.com": "Caregiver"
 };
 function getRoleByEmail(email) {
   return emailToRole[email] || "Volunteer";
@@ -61,12 +67,19 @@ export default function ChatApp() {
 
   // Predefined caregivers
   const predefinedEmails = [
-    "headcare@example.com",
-    "boardmember@example.com",
     "ceo@example.com",
+    "volunteer@example.com",
+    "boardmember@example.com",
     "reptile-caregiver@example.com",
+    "hr@example.com",
     "dog-caregiver@example.com",
     "cat-caregiver@example.com",
+    "caregivers@example.com",
+    "headcare@example.com",
+    "bird-caregiver@nsae.com",
+    "wildlife-caregiver@nsae.com",
+    "mamal-caregiver@nase.com",
+    "other-caregiver@nase.com"
   ];
 
   // -------------------

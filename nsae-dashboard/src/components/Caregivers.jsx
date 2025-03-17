@@ -19,6 +19,8 @@ function Caregivers() {
   const [meetingsList, setMeetingsList] = useState([]); // List of meetings to display
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
+  const [userEmails, setUserEmails] = useState({});
+  
 
   // Check for the current user session on initial load
   useEffect(() => {
@@ -67,6 +69,14 @@ function Caregivers() {
       fetchMeetings(); // Fetch meetings when the user is set
     }
   }, [user]);
+   // Format user display name
+   const formatUserName = (userId, role = '') => {
+    // First check if we have this user's email in our state
+    if (userEmails[userId]) {
+      return userEmails[userId];
+    }    
+    return 'Unknown';
+  };
 
   useEffect(() => {
     checkCaregiver();
@@ -115,12 +125,53 @@ function Caregivers() {
   const fetchReports = async () => {
     try {
       setIsLoading(true);
-      let data;
-      if (!caregiver.specialization || caregiver.specialization === 'all') {
-        data = await reportService.getAllReports();
-      } else {
-        data = await reportService.getReportsByAnimalType(caregiver.specialization);
+      console.log("Head Caregiver fetching all reports");
+      
+      // Get all reports using the existing service method
+      const data = await reportService.getAllReports();
+      
+      if (data && data.length > 0) {
+        console.log(`Fetched ${data.length} reports, attempting to get user emails`);
+        
+        // Extract all unique user IDs (both volunteers and caregivers)
+        const volunteerIds = data
+          .filter(r => r.volunteer_id)
+          .map(r => r.volunteer_id);
+          
+        const caregiverIds = data
+          .filter(r => r.caregiver_id)
+          .map(r => r.caregiver_id);
+          
+        const uniqueUserIds = [...new Set([...volunteerIds, ...caregiverIds])];
+        
+        if (uniqueUserIds.length > 0) {
+          try {
+            // Try to fetch user emails directly from auth.users (requires proper permissions)
+            const { data: userData, error: authError } = await supabase.auth.admin.listUsers({
+              perPage: 100 
+            });
+            
+            if (!authError && userData?.users) {
+              const emailMap = {};
+              
+              userData.users.forEach(user => {
+                if (uniqueUserIds.includes(user.id)) {
+                  emailMap[user.id] = user.email;
+                }
+              });
+              
+              console.log("Found email mappings:", emailMap);
+              setUserEmails(emailMap);
+            } else {
+              console.log("Couldn't access auth users directly:", authError);
+            }
+          } catch (error) {
+            console.warn("Couldn't fetch user emails:", error);
+          }
+        }
       }
+      
+      console.log(`Fetched ${data?.length || 0} total reports`);
       setReports(data || []);
     } catch (error) {
       console.error("Error fetching reports:", error);
@@ -224,8 +275,8 @@ function Caregivers() {
                   <p><strong>Status:</strong> <span className={`status-badge status-${(report.status || 'pending').toLowerCase()}`}>
                     {report.status ? (report.status.charAt(0).toUpperCase() + report.status.slice(1)) : 'Pending'}
                   </span></p>
-                  <p><strong>Volunteer:</strong> {report.volunteers?.full_name || report.volunteers?.email || 'Unknown'}</p>
-                </div>
+                  <p><strong>Volunteer:</strong> {userEmails[report.volunteer_id] || formatUserName(report.volunteer_id, 'Volunteer')}</p>
+                  </div>
               </div>
             ))
           )}
@@ -242,6 +293,14 @@ function Caregivers() {
           <div className="report-detail">
             <h2>Report Details</h2>
 
+            <div className="detail-header">
+                <h3>{selectedReport.animal_type} reported by {userEmails[selectedReport.volunteer_id] || formatUserName(selectedReport.volunteer_id, 'Volunteer')}</h3>
+                <span className={`status-badge status-${(selectedReport.status || 'pending').toLowerCase()}`}>
+                  {selectedReport.status 
+                    ? (selectedReport.status.charAt(0).toUpperCase() + selectedReport.status.slice(1)) 
+                    : 'Pending'}
+                </span>
+              </div>
             {selectedReport.image_url && (
               <img src={selectedReport.image_url} alt="Reported Animal" className="report-image-large" />
             )}

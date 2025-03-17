@@ -79,8 +79,10 @@ function CEOPage() {
 
   // Select all emails except predefined ones
   const selectAllEmails = () => {
-    const filteredEmails = userEmails.filter(email => !predefinedEmails.includes(email));
-    setSelectedEmails(filteredEmails);
+    const volunteerEmails = userEmails.filter(email => 
+      !predefinedEmails.includes(email) && !email.includes("caregiver")
+    );
+    setSelectedEmails(volunteerEmails);
   };
 
   // Function to handle meeting submit
@@ -130,19 +132,6 @@ function CEOPage() {
     setSelectedEmails([]); // Reset selected emails
     setShowForm(false);
     setTimeout(() => setMessage(""), 3000);
-  };
-
-  // Function to handle editing a meeting
-  const handleEditMeeting = (meeting) => {
-    setMeetingDetails({
-      id: meeting.id,
-      time: meeting.time,
-      place: meeting.place,
-      topic: meeting.topic,
-      emails: meeting.emails,
-    });
-    setSelectedEmails(meeting.emails); // Set previously selected emails
-    setShowForm(true); // Show form for editing
   };
 
   // Function to delete a meeting
@@ -259,7 +248,6 @@ function CEOPage() {
               {meetingsList.map((meeting) => (
                 <li key={meeting.id}>
                   <span>{meeting.time} - {meeting.place} - {meeting.topic}</span>
-                  <button onClick={() => handleEditMeeting(meeting)}>Edit</button>
                   <button onClick={() => handleDeleteMeeting(meeting.id)}>Delete</button>
                 </li>
               ))}

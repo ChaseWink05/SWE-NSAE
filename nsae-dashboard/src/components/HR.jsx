@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import supabase from "../utils/supabaseClient"; 
 import "../styles/HR.css";
-import './ChatApp'
 import ChatApp from './ChatApp';
 
 function HR() {
@@ -42,54 +41,6 @@ function HR() {
     "other-caregiver@nase.com"
   ];
 
-  // Check for the current user session on initial load
-  useEffect(() => {
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        setUser(session.user);
-      }
-    };
-
-    getSession();
-
-    // Listen for changes in the auth session
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        setUser(session.user);
-      } else {
-        setUser(null);
-      }
-    });
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, []);
-
-  // Fetch existing meetings on page load
-  const fetchMeetings = async () => {
-    const { data, error } = await supabase
-      .from("meetings")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Error fetching meetings:", error);
-      setMessage("❌ Failed to fetch meetings.");
-    } else {
-      // Filter meetings based on the user's email
-      const filteredMeetings = data.filter(meeting => meeting.emails.includes(user.email));
-      setMeetingsList(filteredMeetings);
-    }
-  };
-
-  useEffect(() => {
-    if (user) {
-      fetchMeetings(); // Fetch meetings when the user is set
-    }
-  }, [user]);
-
   // Fetch user emails from Supabase authentication user table
   const fetchUserEmails = async () => {
     const { data, error } = await supabase.auth.admin.listUsers();
@@ -102,7 +53,23 @@ function HR() {
     }
   };
 
+  // Fetch existing meetings on page load
+  const fetchMeetings = async () => {
+    const { data, error } = await supabase
+      .from("meetings")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching meetings:", error);
+      setMessage("❌ Failed to fetch meetings.");
+    } else {
+      setMeetingsList(data);
+    }
+  };
+
   useEffect(() => {
+    fetchMeetings(); // Fetch meetings when the component is mounted
     fetchUserEmails(); // Fetch user emails when the component is mounted
   }, []);
 
@@ -117,8 +84,10 @@ function HR() {
 
   // Select all emails except predefined ones
   const selectAllEmails = () => {
-    const filteredEmails = userEmails.filter(email => !predefinedEmails.includes(email));
-    setSelectedEmails(filteredEmails);
+    const volunteerEmails = userEmails.filter(email => 
+      !predefinedEmails.includes(email) && !email.includes("caregiver")
+    );
+    setSelectedEmails(volunteerEmails);
   };
 
   // Function to handle meeting submit
@@ -168,19 +137,6 @@ function HR() {
     setSelectedEmails([]); // Reset selected emails
     setShowForm(false);
     setTimeout(() => setMessage(""), 3000);
-  };
-
-  // Function to handle editing a meeting
-  const handleEditMeeting = (meeting) => {
-    setMeetingDetails({
-      id: meeting.id,
-      time: meeting.time,
-      place: meeting.place,
-      topic: meeting.topic,
-      emails: meeting.emails,
-    });
-    setSelectedEmails(meeting.emails); // Set previously selected emails
-    setShowForm(true); // Show form for editing
   };
 
   // Function to delete a meeting
@@ -342,6 +298,7 @@ function HR() {
             {meetingsList.map((meeting) => (
               <li key={meeting.id}>
                 <span>{meeting.time} - {meeting.place} - {meeting.topic}</span>
+                <button onClick={() => handleDeleteMeeting(meeting.id)}>Delete</button>
               </li>
             ))}
           </ul>
@@ -349,19 +306,24 @@ function HR() {
           <p>No meetings found.</p>
         )}
       </div>
+
+      {/* Message display */}
       {message && <p className="message">{message}</p>}
-            <button 
-              className="chat-toggle-button" 
-              onClick={() => setShowChat(prev => !prev)}
-            >
-              {showChat ? "Close Chat" : "Organization Chat"}
-            </button>
-      
-            {showChat && (
-              <div className="chat-container">
-                <ChatApp />
-              </div>
-            )}
+
+      {/* Chat Toggle Button */}
+      <button 
+        className="chat-toggle-button" 
+        onClick={() => setShowChat(prev => !prev)}
+      >
+        {showChat ? "Close Chat" : "Organization Chat"}
+      </button>
+
+      {/* Chat Window */}
+      {showChat && (
+        <div className="chat-container">
+          <ChatApp />
+        </div>
+      )}
 
       {/* Animal Filter Dropdown */}
       <div className="animal-filter">
@@ -406,9 +368,6 @@ function HR() {
           </div>
         </div>
       )}
-
-      {/* Message display */}
-      {message && <p className="message">{message}</p>}
     </div>
   );
 }

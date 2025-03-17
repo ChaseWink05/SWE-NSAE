@@ -104,6 +104,44 @@
   align-items: center;
 }
 
+.meeting-list button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.meeting-list button:hover {
+  background-color: #0056b3;
+}
+
+.message {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #2c3e50;
+}
+
+.chat-toggle-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.chat-toggle-button:hover {
+  background-color: #0056b3;
+}
+
+.chat-container {
+  margin-top: 20px;
+}
+
 .animal-filter {
   margin-bottom: 20px;
 }
@@ -123,10 +161,4 @@
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
-}
-
-.message {
-  margin-top: 20px;
-  font-size: 16px;
-  color: #2c3e50;
 }
