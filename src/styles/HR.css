@@ -1,0 +1,164 @@
+.hr-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hr-header {
+  font-size: 24px;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.hr-dashboard {
+  margin-bottom: 20px;
+}
+
+.hr-login-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.hr-login-btn:hover {
+  background-color: #0056b3;
+}
+
+.create-meeting-btn,
+.submit-meeting-btn,
+.select-all-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.create-meeting-btn:hover,
+.submit-meeting-btn:hover,
+.select-all-btn:hover {
+  background-color: #0056b3;
+}
+
+.meeting-form {
+  margin-top: 20px;
+}
+
+.meeting-form input,
+.meeting-form select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.email-selection ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.email-selection li {
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.email-selection li.selected {
+  background-color: #007bff;
+  color: white;
+}
+
+.selected-emails ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.meeting-list {
+  margin-top: 20px;
+}
+
+.meeting-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.meeting-list li {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.meeting-list button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.meeting-list button:hover {
+  background-color: #0056b3;
+}
+
+.message {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #2c3e50;
+}
+
+.chat-toggle-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.chat-toggle-button:hover {
+  background-color: #0056b3;
+}
+
+.chat-container {
+  margin-top: 20px;
+}
+
+.animal-filter {
+  margin-bottom: 20px;
+}
+
+.animal-reports {
+  margin-top: 20px;
+}
+
+.report-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.report-card {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}

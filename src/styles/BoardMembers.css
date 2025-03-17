@@ -1,0 +1,79 @@
+.board-members-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .board-members-header {
+    font-size: 24px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+  }
+  
+  .board-members-dashboard {
+    margin-bottom: 20px;
+  }
+  
+  .board-members-login-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .board-members-login-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .animal-filter {
+    margin-bottom: 20px;
+  }
+  
+  .animal-reports {
+    margin-top: 20px;
+  }
+  
+  .report-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .report-card {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .meeting-list {
+    margin-top: 20px;
+  }
+  
+  .meeting-list ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .meeting-list li {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .message {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #2c3e50;
+  }

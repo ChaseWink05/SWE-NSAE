@@ -1,0 +1,99 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: white;
+  padding: 20px;
+}
+
+/* Form styling */
+.login-form {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px; /* Adjusted max-width */
+  text-align: center;
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center items horizontally */
+}
+
+h2 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+/* Input field styling */
+input[type="email"],
+input[type="password"],
+textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+}
+
+/* Focus effect on input fields */
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+  border-color: #2980b9;
+  outline: none;
+}
+
+/* Label styling */
+label {
+  font-size: 1.1rem;
+  color: #34495e;
+  text-align: left;
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* Button styling */
+button {
+  background-color: #2980b9; /* Blue */
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  width: 100%; /* Make buttons full width */
+  max-width: 300px; /* Limit the maximum width of buttons */
+  box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+}
+
+/* Hover effect for the submit button */
+button:hover {
+  background-color: #1abc9c; /* Green */
+}
+
+/* Add a little space between form elements */
+.login-form input,
+.login-form textarea {
+  margin-bottom: 15px;
+}
+
+/* Error message styling */
+.error-message {
+  color: #e74c3c;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+/* Message styling */
+.message {
+  color: #2c3e50;
+  font-size: 1rem;
+  margin-top: 10px;
+}

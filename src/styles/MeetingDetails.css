@@ -1,0 +1,48 @@
+.meeting-details {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .meeting-details h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .meeting-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .meeting-item p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #555;
+  }
+  
+  .meeting-item strong {
+    color: #333;
+  }
+  
+  .error {
+    color: red;
+    font-size: 14px;
+  }
+  /* Add to your MeetingDetails.css */
+.dismiss-button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 5px;
+  }
+  
+  .dismiss-button:hover {
+    background-color: darkred;
+  }
