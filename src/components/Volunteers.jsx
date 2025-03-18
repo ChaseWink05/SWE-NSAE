@@ -14,6 +14,7 @@ function Volunteers() {
     image: ''
   });
   
+  
   // UI state
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -517,10 +518,7 @@ function Volunteers() {
               />
             </div>
   
-            <div className="form-group">
-              <label>Profile Image:</label>
-              <input type="file" onChange={handleImageChange} />
-            </div>
+            
   
             <div className="button-group">
               <button onClick={saveProfile} className="save-button">Save Profile</button>
