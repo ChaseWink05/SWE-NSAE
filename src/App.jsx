@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from "./components/Home";
 import Dashboard from "./components/Dashboard";
 import Messages from "./components/Messages";
@@ -22,7 +22,7 @@ import AboutUs from "./components/AboutUs.jsx";
 function App() {
   return (
     <Router basename = "/SWE-NSAE/">
-      <Switch>
+      
       <div>
         <Navbar /> {/* Include the Navbar component here */}
         <Routes>
@@ -46,7 +46,6 @@ function App() {
         </Routes>
         <Footer />
       </div>
-      </Switch>
     </Router>
   );
 }
