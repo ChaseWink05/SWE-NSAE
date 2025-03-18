@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="refresh" content="0; URL=./index.html" />
+    <script type="text/javascript">
+      // Redirect all 404 errors to index.html
+      var path = window.location.pathname;
+      var newPath = path.replace('/SWE-NSAE', ''); // Adjust the base path if necessary
+      window.location.replace('/SWE-NSAE' + newPath);
+    </script>
   </head>
   <body>
   </body>
