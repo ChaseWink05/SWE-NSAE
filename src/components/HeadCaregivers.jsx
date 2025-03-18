@@ -13,7 +13,8 @@ function HeadCaregivers() {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [reportToDelete, setReportToDelete] = useState(null);
   const [userEmails, setUserEmails] = useState({});
-  const [meetingsList, setMeetingsList] = useState([]); // List of meetings to display
+  // List of meetings to display
+  const [meetingsList, setMeetingsList] = useState([]); 
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
   const [showChat, setShowChat] = useState(false);

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
-import logo from "../Images/Logo.jpg"; // Import the image
-import supabase from "../utils/supabaseClient"; // Ensure supabaseClient is properly imported
+import logo from "../Images/Logo.jpg"; 
+// Ensure supabaseClient is properly imported
+import supabase from "../utils/supabaseClient"; 
 
 function Navbar() {
   const [user, setUser] = useState(null);
@@ -26,20 +27,22 @@ function Navbar() {
 
     // Cleanup listener on unmount
     return () => {
-      // Removing the unsubscribe attempt
-      // Since it's not necessary for your requirements, you can leave this out
     };
   }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    setUser(null); // Clear the user state when logging out
-    navigate("/login"); // Navigate to the login page
+    // Clear the user state when logging out
+    setUser(null); 
+    // Navigate to the login page
+    navigate("/login"); 
   };
 
   const extractNameFromEmail = (email) => {
-    const [name] = email.split("@");  // Take the part before '@' as the name
-    return name.charAt(0).toUpperCase() + name.slice(1);  // Capitalize the first letter
+    // Take the part before '@' as the name
+    const [name] = email.split("@");  
+    // Capitalize the first letter
+    return name.charAt(0).toUpperCase() + name.slice(1);  
   };
 
   return (
@@ -54,21 +57,27 @@ function Navbar() {
           <Link to="/Home">Home</Link>
           <Link to="/about">About Us</Link>
           <Link to="/email">Contact Us</Link>
-          <Link to="/login">Login/Dashboard</Link> {/* Ensure this link points to the correct route */}
+          {/* Ensure this link points to the correct route */}
+          <Link to="/login">Login/Dashboard</Link> 
         </div>
       </div>
       <div className="navbar-logo">
-        <Link to="/home"> {/* Wrap the logo with a Link component */}
-          <img src={logo} alt="NSAE Logo" /> {/* Use the imported image */}
+        {/* Wrap the logo with a Link component */}
+        <Link to="/home"> 
+        {/* Use the imported image */}
+          <img src={logo} alt="NSAE Logo" /> 
         </Link>
       </div>
       <ul className="navbar-links">
         <li><Link to="/Signup">Volunteer Now!</Link></li>
-        <li><Link to="/donate" className="donate-link">Donate</Link> {/* Change Donate to a text link */}</li>
+        {/* Change Donate to a text link */}
+        <li><Link to="/donate" className="donate-link">Donate</Link> </li>
         {user && (
           <li className="user-info">
-            <span className="user-name">Welcome, {extractNameFromEmail(user.email)}</span> {/* Display the user's name */}
-            <button onClick={handleLogout}>Logout</button> {/* Button to log out */}
+            {/* Display the user's name */}
+            <span className="user-name">Welcome, {extractNameFromEmail(user.email)}</span> 
+            {/* Button to log out */}
+            <button onClick={handleLogout}>Logout</button> 
           </li>
         )}
       </ul>
