@@ -13,12 +13,13 @@ function CEOPage() {
   });
   const [message, setMessage] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [showPreviousMeetings, setShowPreviousMeetings] = useState(false); // Track if previous meetings are shown
-  const [userEmails, setUserEmails] = useState([]); // List of user emails
-  const [selectedEmails, setSelectedEmails] = useState([]); // Track selected emails
-  const [meetingsList, setMeetingsList] = useState([]); // List of meetings to select from
+  const [showPreviousMeetings, setShowPreviousMeetings] = useState(false); 
+  const [userEmails, setUserEmails] = useState([]); 
+  const [selectedEmails, setSelectedEmails] = useState([]); 
+  const [meetingsList, setMeetingsList] = useState([]); 
   const [showChat, setShowChat] = useState(false);
 
+  // Predefined email addresses for different roles
   const predefinedEmails = [
     "ceo@example.com",
     "handler@example.com",
@@ -64,16 +65,18 @@ function CEOPage() {
   };
 
   useEffect(() => {
-    fetchMeetings(); // Fetch meetings when the component is mounted
-    fetchUserEmails(); // Fetch user emails when the component is mounted
+    fetchMeetings(); 
+    fetchUserEmails(); 
   }, []);
 
   // Toggle email selection
   const toggleEmailSelection = (email) => {
     setSelectedEmails((prevSelectedEmails) =>
       prevSelectedEmails.includes(email)
-        ? prevSelectedEmails.filter((selectedEmail) => selectedEmail !== email) // Deselect
-        : [...prevSelectedEmails, email] // Select
+    // Deselect
+        ? prevSelectedEmails.filter((selectedEmail) => selectedEmail !== email) 
+        // Select
+        : [...prevSelectedEmails, email] 
     );
   };
 
@@ -88,7 +91,7 @@ function CEOPage() {
   // Function to handle meeting submit
   const handleMeetingSubmit = async () => {
     const { time, place, topic } = meetingDetails;
-
+    // Check if all fields are provided
     if (!time || !place || !topic || selectedEmails.length === 0) {
       setMessage("❌ Please provide all fields (Time, Place, Topic, and Emails).");
       return;
@@ -107,7 +110,8 @@ function CEOPage() {
       } else {
         setMessage("✅ Meeting updated successfully!");
         resetForm();
-        fetchMeetings(); // Refresh meetings list after update
+        // Refresh meetings list after update
+        fetchMeetings(); 
       }
     } else {
       // Create new meeting
@@ -121,7 +125,7 @@ function CEOPage() {
       } else {
         setMessage("✅ Meeting created successfully!");
         resetForm();
-        fetchMeetings(); // Refresh meetings list after creation
+        fetchMeetings(); 
       }
     }
   };
@@ -129,7 +133,7 @@ function CEOPage() {
   // Function to reset the form
   const resetForm = () => {
     setMeetingDetails({ id: null, time: "", place: "", topic: "", emails: [] });
-    setSelectedEmails([]); // Reset selected emails
+    setSelectedEmails([]); 
     setShowForm(false);
     setTimeout(() => setMessage(""), 3000);
   };
@@ -143,10 +147,11 @@ function CEOPage() {
       setMessage("❌ Failed to delete meeting.");
     } else {
       setMessage("✅ Meeting deleted successfully!");
-      setMeetingsList(meetingsList.filter((meeting) => meeting.id !== id)); // Remove deleted meeting
+      // Remove deleted meeting from the list
+      setMeetingsList(meetingsList.filter((meeting) => meeting.id !== id)); 
     }
-
-    setTimeout(() => setMessage(""), 3000); // Clear message after 3 seconds
+    // Clear message after 3 seconds
+    setTimeout(() => setMessage(""), 3000); 
   };
 
   return (
@@ -245,6 +250,7 @@ function CEOPage() {
           <h3>Existing Meetings</h3>
           {meetingsList.length > 0 ? (
             <ul>
+              {/* Display meeting details and delete button */}
               {meetingsList.map((meeting) => (
                 <li key={meeting.id}>
                   <span>{meeting.time} - {meeting.place} - {meeting.topic}</span>

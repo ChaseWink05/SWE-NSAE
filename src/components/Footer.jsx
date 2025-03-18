@@ -6,7 +6,9 @@ import pollution_extractor from "../Images/pollution_extractor.png";
 import save_the_planet from "../Images/save_the_planet.png";
 function Footer() {
     return (
+        
         <footer className="footer">
+            {/*Adds the footer section to the page*/}
             <div className="footer-content">
                 <p>📍 NSAE Office: 1 Main Street, Dreamland, DL 00000, ULTRA PLANET</p>
                 <p>📍 Safari Park: 2 Park Street, Dreamland, DL 00000, ULTRA PLANET</p>

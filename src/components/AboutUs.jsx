@@ -7,15 +7,17 @@ import saul from '../Images/SaulGoodMan.png';
 import hank from '../Images/hank.png';
 import { Link } from "react-router-dom";
 
+// AboutUs component definition
 function AboutUs() {
-  // Sample data for CEO and board members
+  // Sample data for CEO
   const ceo = {
     name: "Dr. Gustavo Fring",
     title: "Chief Executive Officer",
     image: gus,
     bio: "Dr. Fring has over 20 years of experience in animal welfare and has been instrumental in expanding our organization's reach and impact."
-};
+  };
   
+  // Sample data for board members
   const boardMembers = [
     {
       name: "Jesse Pinkman",
@@ -45,6 +47,7 @@ function AboutUs() {
 
   return (
     <div className="about-us-container">
+      {/* Hero section with mission statement */}
       <div className="hero-section">
         <h1>About NSAE</h1>
         <p className="mission-statement">
@@ -52,6 +55,7 @@ function AboutUs() {
         </p>
       </div>
 
+      {/* Our Story section */}
       <section className="our-story">
         <h2>Our Story</h2>
         <div className="story-content">
@@ -69,9 +73,11 @@ function AboutUs() {
         </div>
       </section>
 
+      {/* Leadership section */}
       <section className="leadership">
         <h2>Our Leadership</h2>
         
+        {/* CEO section */}
         <div className="ceo-section">
           <h3>Executive Leadership</h3>
           <div className="leader-card ceo-card">
@@ -86,6 +92,7 @@ function AboutUs() {
           </div>
         </div>
 
+        {/* Board of Directors section */}
         <div className="board-section">
           <h3>Board of Directors</h3>
           <div className="board-grid">
@@ -105,6 +112,7 @@ function AboutUs() {
         </div>
       </section>
 
+      {/* Impact section */}
       <section className="impact">
         <h2>Our Impact</h2>
         <div className="stats-grid">

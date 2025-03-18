@@ -14,6 +14,7 @@ function DonatePage() {
       alert("Credit card number must be 16 digits!");
       return;
     }
+    //checks if the length is 3
     if (cvv.length !== 3) {
       alert("CVV must be 3 digits!");
       return;
@@ -40,6 +41,7 @@ function DonatePage() {
       return;
     }
 
+    //checks if there is a valid amount
     setIsLoading(true);
     const donationAmount = parseFloat(amount);
     if (isNaN(donationAmount) || donationAmount <= 0) {
@@ -74,6 +76,7 @@ function DonatePage() {
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
       />
+      {/*Shows the different fields to enter information*/}
       <input
         type="text"
         placeholder="Credit Card Number"

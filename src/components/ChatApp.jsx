@@ -2,17 +2,13 @@ import React, { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 import "../styles/ChatApp.css"; // Import the CSS file
 
-// -------------------
 // Supabase Setup
-// -------------------
 const SUPABASE_URL = "https://ueswvkitrkkkmemrxpir.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlc3d2a2l0cmtra21lbXJ4cGlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA2NzI3NDEsImV4cCI6MjA1NjI0ODc0MX0.21_qSMwhFGgXx4k6VnI5BUkSsD1eFKzQmAAzR9pHrX4"
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// -------------------
 // Custom Role Map
-// -------------------
 const emailToRole = {
     "ceo@example.com" : "CEO",
     "volunteer@example.com": "Volunteer",
@@ -33,9 +29,7 @@ function getRoleByEmail(email) {
 }
 
 export default function ChatApp() {
-  // -------------------
   // State Variables
-  // -------------------
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [userEmail, setUserEmail] = useState("");
@@ -82,9 +76,7 @@ export default function ChatApp() {
     "other-caregiver@nase.com"
   ];
 
-  // -------------------
-  // 1) On Mount
-  // -------------------
+ //sets the user email and fetches all users
   useEffect(() => {
     (async () => {
       const {
@@ -97,9 +89,7 @@ export default function ChatApp() {
     })();
   }, []);
 
-  // -------------------
-  // 2) Fetch all users
-  // -------------------
+  // Fetch all users
   async function fetchAllUsers() {
     try {
       const { data, error } = await supabase.from("users").select("email");
@@ -119,14 +109,12 @@ export default function ChatApp() {
     }
   }
 
-  // -------------------
-  // 3) Fetch messages
-  // -------------------
+  // Fetch messages
   async function fetchMessages() {
     if (!userEmail) return;
 
     let query = supabase.from("messages").select("*");
-
+    // Filter based on chat mode
     if (chatMode === "group") {
       query = query.eq("type", "group").eq("recipient", "group");
     } else if (chatMode === "dm") {
@@ -165,9 +153,7 @@ export default function ChatApp() {
     }
   }
 
-  // -------------------
-  // 4) Mark messages as read
-  // -------------------
+  //Mark messages as read
   async function markMessagesAsRead(msgs) {
     if (!userEmail) return;
 
@@ -189,12 +175,10 @@ export default function ChatApp() {
     await fetchDMUnreadChats();
   }
 
-  // -------------------
-  // 5) Send a message
-  // -------------------
+  // Send a message
   async function sendMessage() {
     if (!newMessage.trim()) return;
-
+    //Gets the role of the user
     const role = getRoleByEmail(userEmail);
     const messageData = {
       text: newMessage,
@@ -223,12 +207,10 @@ export default function ChatApp() {
     fetchMessages();
   }
 
-  // -------------------
-  // 6) Real-time subscription
-  // -------------------
+  // Real-time subscription
   useEffect(() => {
     if (!userEmail) return;
-
+    // Subscribe to changes in the messages table
     const subscription = supabase
       .channel("messages-channel")
       .on(
@@ -265,7 +247,7 @@ export default function ChatApp() {
             }
           }
 
-          // Recalc unread
+          // Recalls unread
           fetchOrgUnreadCount();
           fetchDMUnreadChats();
           fetchPrivateGroups();
@@ -284,9 +266,7 @@ export default function ChatApp() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userEmail, chatMode, selectedUser, multiGroupRecipient]);
 
-  // -------------------
-  // 7) Whenever chatMode/selectedUser changes, etc.
-  // -------------------
+  // Whenever chatMode/selectedUser changes, etc.
   useEffect(() => {
     if (userEmail) {
       fetchMessages();
@@ -294,12 +274,9 @@ export default function ChatApp() {
       fetchDMUnreadChats();
       fetchPrivateGroups();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatMode, selectedUser, multiGroupRecipient, userEmail]);
 
-  // -------------------
-  // 8) Organization unread count
-  // -------------------
+  // Organization unread count
   async function fetchOrgUnreadCount() {
     if (!userEmail) return;
     const { data, error } = await supabase.rpc("org_unread_count", {
@@ -312,9 +289,7 @@ export default function ChatApp() {
     setOrgUnreadCount(data || 0);
   }
 
-  // -------------------
-  // 9) DM unread chats
-  // -------------------
+  // DM unread chats
   async function fetchDMUnreadChats() {
     if (!userEmail) return;
     const { data, error } = await supabase.rpc("dm_unread_chats", {
@@ -328,9 +303,7 @@ export default function ChatApp() {
     setDmUnreadChats(arr.filter((x) => x !== null));
   }
 
-  // -------------------
-  // 10) Create new multi-user group
-  // -------------------
+  // Create new multi-user group
   async function createNewGroupChat() {
     if (multiGroupUsers.length === 0) return;
 
@@ -339,6 +312,7 @@ export default function ChatApp() {
     const sortedList = [...participants].sort();
     const groupString = sortedList.join(";");
 
+    
     const role = getRoleByEmail(userEmail);
     const messageData = {
       text: "Group chat created!",
@@ -360,9 +334,7 @@ export default function ChatApp() {
     setNewMessageNotification("");
   }
 
-  // -------------------
-  // 11) Fetch private groups
-  // -------------------
+  //  Fetch private groups
   async function fetchPrivateGroups() {
     if (!userEmail) return;
     const { data, error } = await supabase
@@ -384,7 +356,7 @@ export default function ChatApp() {
     setPrivateGroups([...groupSet]);
   }
 
-  // ** New function: Refresh everything manually **
+  // New function: Refresh everything manually 
   function manualRefresh() {
     fetchMessages();
     fetchOrgUnreadCount();
@@ -392,16 +364,14 @@ export default function ChatApp() {
     fetchPrivateGroups();
   }
 
-  // Helper: toggle checkboxes for multi-group selection
+  // toggle checkboxes for multi-group selection
   function toggleMultiGroupUser(u) {
     setMultiGroupUsers((prev) =>
       prev.includes(u) ? prev.filter((x) => x !== u) : [...prev, u]
     );
   }
 
-  // -------------------
-  // 12) Filter messages
-  // -------------------
+  // Filter messages
   let filteredMessages = [];
   if (chatMode === "group") {
     filteredMessages = messages.filter(
@@ -420,9 +390,7 @@ export default function ChatApp() {
     );
   }
 
-  // -------------------
-  // 13) Render UI
-  // -------------------
+  //  Render UI
   return (
     <div
       style={{
@@ -526,7 +494,7 @@ export default function ChatApp() {
         Private Group Chat
       </button>
 
-      {/* NEW: "Refresh Chat" button */}
+      {/* "Refresh Chat" button */}
       <button
         onClick={manualRefresh}
         style={{

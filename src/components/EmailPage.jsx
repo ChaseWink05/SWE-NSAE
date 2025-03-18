@@ -3,6 +3,7 @@ import emailjs from "@emailjs/browser";
 import "../styles/EmailPage.css"; // Import styling if needed
 
 function EmailPage() {
+  //sets the data for the email form
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,7 +26,7 @@ function EmailPage() {
       return;
     }
 
-    setLoading(true); // Show loading state
+    setLoading(true); 
 
     const emailParams = {
       from_name: formData.name,
@@ -36,10 +37,10 @@ function EmailPage() {
 
     emailjs
       .send(
-        "service_fp7g3to", // Replace with your EmailJS Service ID
-        "template_ho8plxr", // Replace with your EmailJS Template ID
+        "service_fp7g3to", 
+        "template_ho8plxr", 
         emailParams,
-        "jE8nMyNB8y4VifjqD" // Replace with your EmailJS Public Key
+        "jE8nMyNB8y4VifjqD" 
       )
       .then(
         (response) => {
@@ -52,11 +53,12 @@ function EmailPage() {
           console.error("Error details:", error);
         }
       )
-      .finally(() => setLoading(false)); // Remove loading state
+      .finally(() => setLoading(false)); 
   };
 
   return (
     <div className="email-container">
+      {/* Email form */}
       <h2>Contact Us</h2>
       <form onSubmit={sendEmail} className="email-form">
         <input

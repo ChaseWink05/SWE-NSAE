@@ -5,12 +5,13 @@ import './ChatApp'
 import ChatApp from './ChatApp';
 
 function BoardMembers() {
+  // State variables to manage various data and UI states
   const [totalDonations, setTotalDonations] = useState(0);
   const [animalReports, setAnimalReports] = useState([]);
   const [filteredReports, setFilteredReports] = useState([]);
-  const [loading, setLoading] = useState(true);  // Add loading state
+  const [loading, setLoading] = useState(true);  
   const [selectedAnimalType, setSelectedAnimalType] = useState("All");
-  const [meetingsList, setMeetingsList] = useState([]); // List of meetings to display
+  const [meetingsList, setMeetingsList] = useState([]); 
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
   const [showChat, setShowChat] = useState(false);
@@ -91,16 +92,17 @@ function BoardMembers() {
       if (error) {
         console.error("Error fetching animal reports:", error);
       } else {
-        console.log("Fetched animal reports:", data); // Log the fetched data
+        console.log("Fetched animal reports:", data); 
         setAnimalReports(data);
-        setFilteredReports(data); // Initially, show all reports
+        setFilteredReports(data); 
       }
-      setLoading(false);  // Set loading to false once fetching is complete
+      setLoading(false);  
     };
 
     fetchAnimalReports();
   }, []);
 
+  // Redirect to login page
   const handleLoginRedirect = () => {
     window.open("https://app.supabase.io/", "_blank");
   };
@@ -109,14 +111,15 @@ function BoardMembers() {
   const handleAnimalFilter = (event) => {
     const selectedType = event.target.value;
     setSelectedAnimalType(selectedType);
-
+    // Show all reports
     if (selectedType === "All") {
-      setFilteredReports(animalReports); // Show all reports
+      setFilteredReports(animalReports); 
     } else {
       const filtered = animalReports.filter((report) =>
         report.animal_type.toLowerCase() === selectedType.toLowerCase()
       );
-      setFilteredReports(filtered); // Show filtered reports based on selection
+      // Show filtered reports based on selection
+      setFilteredReports(filtered); 
     }
   };
 

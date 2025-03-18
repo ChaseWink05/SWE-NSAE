@@ -16,7 +16,7 @@ function Caregivers() {
     email: '',
     specialization: null
   });
-  const [meetingsList, setMeetingsList] = useState([]); // List of meetings to display
+  const [meetingsList, setMeetingsList] = useState([]); 
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
   const [userEmails, setUserEmails] = useState({});
@@ -66,7 +66,7 @@ function Caregivers() {
 
   useEffect(() => {
     if (user) {
-      fetchMeetings(); // Fetch meetings when the user is set
+      fetchMeetings(); 
     }
   }, [user]);
    // Format user display name
@@ -82,12 +82,14 @@ function Caregivers() {
     checkCaregiver();
   }, []);
 
+  // Fetch reports when caregiver specialization is set
   useEffect(() => {
     if (caregiver.specialization) {
       fetchReports();
     }
   }, [caregiver.specialization]);
 
+  // Check if the current user is a caregiver and set their specialization
   const checkCaregiver = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -121,7 +123,7 @@ function Caregivers() {
       console.error("Error checking caregiver:", error);
     }
   };
-
+// Fetch all reports from the database
   const fetchReports = async () => {
     try {
       setIsLoading(true);
@@ -181,6 +183,7 @@ function Caregivers() {
     }
   };
 
+  // Review a report and update its status
   const handleReviewReport = async (reportId, status) => {
     try {
       await reportService.reviewReport(reportId, status, reviewNotes);
@@ -220,6 +223,7 @@ function Caregivers() {
         </div>
       )}
       <MeetingDetails meetingsList={meetingsList} />
+      {/*Shows the filters of the reports*/}
       <div className="filter-header">
         <div className="filter-controls">
           <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>
@@ -263,6 +267,7 @@ function Caregivers() {
                   <h3>{report.animal_type}</h3>
                   {report.health_status && (
                     <p className={`health-status ${report.health_status}`}>
+                      {/*displays the status of the animal*/}
                       <strong>Health:</strong> 
                       {report.health_status === 'healthy' ? ' Healthy' : 
                       report.health_status === 'needs_attention' ? ' Needs Medical Attention' : 
@@ -270,6 +275,7 @@ function Caregivers() {
                       ' Unknown'}
                     </p>
                   )}
+                  {/*Displays other information of the report*/}
                   <p><strong>Location:</strong> {report.location}</p>
                   <p><strong>Date:</strong> {new Date(report.created_at).toLocaleDateString()}</p>
                   <p><strong>Status:</strong> <span className={`status-badge status-${(report.status || 'pending').toLowerCase()}`}>
@@ -292,7 +298,7 @@ function Caregivers() {
         {selectedReport && (
           <div className="report-detail">
             <h2>Report Details</h2>
-
+            {/*Displays who was the reporter by*/}
             <div className="detail-header">
                 <h3>{selectedReport.animal_type} reported by {userEmails[selectedReport.volunteer_id] || formatUserName(selectedReport.volunteer_id, 'Volunteer')}</h3>
                 <span className={`status-badge status-${(selectedReport.status || 'pending').toLowerCase()}`}>
@@ -305,6 +311,7 @@ function Caregivers() {
               <img src={selectedReport.image_url} alt="Reported Animal" className="report-image-large" />
             )}
 
+            {/* Show health status if available */}
               <div className="health-status-section">
                   <h4>Health Status:</h4>
                   <p className={`health-status ${selectedReport.health_status || 'unknown'}`}>
