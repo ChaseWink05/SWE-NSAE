@@ -135,12 +135,17 @@ function Caregivers() {
       if (data && data.length > 0) {
         console.log(`Fetched ${data.length} reports, attempting to get user emails`);
         
+        // Filter reports based on caregiver's specialization
+        const filteredReports = caregiver.specialization === 'all'
+          ? data
+          : data.filter(report => report.animal_type.toLowerCase() === caregiver.specialization.toLowerCase());
+        
         // Extract all unique user IDs (both volunteers and caregivers)
-        const volunteerIds = data
+        const volunteerIds = filteredReports
           .filter(r => r.volunteer_id)
           .map(r => r.volunteer_id);
           
-        const caregiverIds = data
+        const caregiverIds = filteredReports
           .filter(r => r.caregiver_id)
           .map(r => r.caregiver_id);
           
@@ -171,10 +176,10 @@ function Caregivers() {
             console.warn("Couldn't fetch user emails:", error);
           }
         }
+        
+        console.log(`Fetched ${filteredReports.length} filtered reports`);
+        setReports(filteredReports);
       }
-      
-      console.log(`Fetched ${data?.length || 0} total reports`);
-      setReports(data || []);
     } catch (error) {
       console.error("Error fetching reports:", error);
       alert("Failed to load reports. Please try again.");
