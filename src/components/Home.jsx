@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../styles/Home.css";
-import HappyDog from "../Images/HappyDog.jpg"; // Import an image
-import rescueImage from "../Images/RescueImage.png"; // Import another image
+import HappyDog from "../Images/HappyDog.jpg"; 
+import rescueImage from "../Images/RescueImage.png"; 
 
+// Home component
 function Home() {
   return (
     <div>
@@ -13,6 +14,7 @@ function Home() {
           We rescue and shelter stray animals. Learn more about our mission or sign up to volunteer!
         </p>
         <div className="home-section">
+          {/* Display an image */}
           <img src={HappyDog} alt="Dogo" className="home-image" />
           <div className="home-text">
             <h2>Our Mission</h2>
@@ -22,6 +24,7 @@ function Home() {
           </div>
         </div>
         <div className="home-section">
+          {/* Display another image */}
           <img src={rescueImage} alt="Rescue Operations" className="home-image" />
           <div className="home-text">
             <h2>Rescue Operations</h2>
@@ -33,12 +36,13 @@ function Home() {
         <h3>Contact Information</h3>
         <p>📍 NSAE Office: 1 Main Street, Dreamland, DL 00000, ULTRA PLANET</p>
         <p>📍 Safari Park: 2 Park Street, Dreamland, DL 00000, ULTRA PLANET</p>
-        <Link to="/email"className="button">Contact Us</Link>
-        
+        {/* Link to the email page */}
+        <Link to="/email" className="button">Contact Us</Link>
+        {/* Link to the signup page */}
         <Link to="/signup" className="button">Become a Volunteer</Link>
+        {/* Link to the login page */}
         <Link to="/login" className="button">Login</Link>
       </div>
- 
     </div>
   );
 }

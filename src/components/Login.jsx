@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from "react"; // <-- Make sure useEffect is imported here
+import React, { useState, useEffect } from "react"; 
 
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
-import supabase from "../utils/supabaseClient"; // Import Supabase client
+import supabase from "../utils/supabaseClient"; 
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track if the user is logged in
+  // Track if the user is logged in
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const navigate = useNavigate();
 
      // Check if the user is already logged in on component mount
   useEffect(() => {
     const checkUser = async () => {
-      const { data: userData, error } = await supabase.auth.getUser(); // Use getUser() instead of user()
+      // Using getUser() instead of user()
+      const { data: userData, error } = await supabase.auth.getUser(); 
       
       if (error) {
         console.error("Error fetching user:", error);
@@ -55,7 +57,8 @@ function Login() {
         }else if (userEmail === "other-caregiver@nase.com") {
           navigate("/caregivers");
         } else {
-          navigate("/volunteer"); // Default route for other users
+          // Default route for other users
+          navigate("/volunteer"); 
         }
       }
     };
@@ -105,20 +108,28 @@ function Login() {
     } else if (userEmail === "headcare@example.com") {
       navigate("/headcare");
     } else {
-      navigate("/volunteer"); // Default route if no match
+      // Default route if no match
+      navigate("/volunteer"); 
     }
   };
   
 
   return (
     <div className="login-container">
+      {/* Container for the login form */}
       <div className="login-form">
         <h2>Login</h2>
+        {/* Input field for email */}
         <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+        {/* Input field for password */}
         <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+        {/* Button to handle login */}
         <button onClick={handleLogin}>Login</button>
+         {/* Button to navigate to signup page */}
         <button onClick={() => navigate("/signup")}>Sign Up</button>
+        {/* Button to navigate to home page */}
         <button onClick={() => navigate("/Home")}>Home</button>
+        {/* Display message if present */}
         {message && <p className="message">{message}</p>}
       </div>
     </div>

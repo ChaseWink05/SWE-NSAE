@@ -7,12 +7,15 @@ function HR() {
   const [totalDonations, setTotalDonations] = useState(0);
   const [animalReports, setAnimalReports] = useState([]);
   const [filteredReports, setFilteredReports] = useState([]);
-  const [loading, setLoading] = useState(true);  // Add loading state
+  // Add loading state
+  const [loading, setLoading] = useState(true);  
   const [selectedAnimalType, setSelectedAnimalType] = useState("All");
-  const [meetingsList, setMeetingsList] = useState([]); // List of meetings to display
+  // List of meetings to display
+  const [meetingsList, setMeetingsList] = useState([]); 
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
-  const [showForm, setShowForm] = useState(false); // Track if the form is shown
+  // Track if the form is shown
+  const [showForm, setShowForm] = useState(false); 
   const [meetingDetails, setMeetingDetails] = useState({
     id: null,
     time: "",
@@ -20,8 +23,10 @@ function HR() {
     topic: "",
     emails: [],
   });
-  const [userEmails, setUserEmails] = useState([]); // List of user emails
-  const [selectedEmails, setSelectedEmails] = useState([]); // Track selected emails
+  // List of user emails
+  const [userEmails, setUserEmails] = useState([]); 
+  // Track selected emails
+  const [selectedEmails, setSelectedEmails] = useState([]); 
   const [showChat, setShowChat] = useState(false);
 
   const predefinedEmails = [
@@ -69,16 +74,20 @@ function HR() {
   };
 
   useEffect(() => {
-    fetchMeetings(); // Fetch meetings when the component is mounted
-    fetchUserEmails(); // Fetch user emails when the component is mounted
+    // Fetch meetings when the component is mounted
+    fetchMeetings();
+    // Fetch user emails when the component is mounted 
+    fetchUserEmails(); 
   }, []);
 
   // Toggle email selection
   const toggleEmailSelection = (email) => {
     setSelectedEmails((prevSelectedEmails) =>
       prevSelectedEmails.includes(email)
-        ? prevSelectedEmails.filter((selectedEmail) => selectedEmail !== email) // Deselect
-        : [...prevSelectedEmails, email] // Select
+    // Deselect
+        ? prevSelectedEmails.filter((selectedEmail) => selectedEmail !== email) 
+        // Select
+        : [...prevSelectedEmails, email] 
     );
   };
 
@@ -112,7 +121,8 @@ function HR() {
       } else {
         setMessage("✅ Meeting updated successfully!");
         resetForm();
-        fetchMeetings(); // Refresh meetings list after update
+        // Refresh meetings list after update
+        fetchMeetings(); 
       }
     } else {
       // Create new meeting
@@ -126,7 +136,8 @@ function HR() {
       } else {
         setMessage("✅ Meeting created successfully!");
         resetForm();
-        fetchMeetings(); // Refresh meetings list after creation
+        // Refresh meetings list after creation
+        fetchMeetings(); 
       }
     }
   };
@@ -134,7 +145,8 @@ function HR() {
   // Function to reset the form
   const resetForm = () => {
     setMeetingDetails({ id: null, time: "", place: "", topic: "", emails: [] });
-    setSelectedEmails([]); // Reset selected emails
+     // Reset selected emails
+    setSelectedEmails([]);
     setShowForm(false);
     setTimeout(() => setMessage(""), 3000);
   };
@@ -148,10 +160,12 @@ function HR() {
       setMessage("❌ Failed to delete meeting.");
     } else {
       setMessage("✅ Meeting deleted successfully!");
-      setMeetingsList(meetingsList.filter((meeting) => meeting.id !== id)); // Remove deleted meeting
+      // Remove deleted meeting
+      setMeetingsList(meetingsList.filter((meeting) => meeting.id !== id)); 
     }
 
-    setTimeout(() => setMessage(""), 3000); // Clear message after 3 seconds
+    // Clear message after 3 seconds
+    setTimeout(() => setMessage(""), 3000); 
   };
 
   // Fetch total donations from the donations table
@@ -182,11 +196,14 @@ function HR() {
       if (error) {
         console.error("Error fetching animal reports:", error);
       } else {
-        console.log("Fetched animal reports:", data); // Log the fetched data
+        // Log the fetched data
+        console.log("Fetched animal reports:", data); 
         setAnimalReports(data);
-        setFilteredReports(data); // Initially, show all reports
+        // Initially, show all reports
+        setFilteredReports(data); 
       }
-      setLoading(false);  // Set loading to false once fetching is complete
+      // Set loading to false once fetching is complete
+      setLoading(false);  
     };
 
     fetchAnimalReports();
@@ -202,12 +219,14 @@ function HR() {
     setSelectedAnimalType(selectedType);
 
     if (selectedType === "All") {
-      setFilteredReports(animalReports); // Show all reports
+      // Show all reports
+      setFilteredReports(animalReports); 
     } else {
       const filtered = animalReports.filter((report) =>
         report.animal_type.toLowerCase() === selectedType.toLowerCase()
       );
-      setFilteredReports(filtered); // Show filtered reports based on selection
+      // Show filtered reports based on selection
+      setFilteredReports(filtered); 
     }
   };
 

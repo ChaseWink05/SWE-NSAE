@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Signup.css";
-import supabase from "../utils/supabaseClient"; // Import Supabase client
+import supabase from "../utils/supabaseClient";
 
 function Signup() {
   const [name, setName] = useState("");
@@ -10,13 +10,15 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track if the user is logged in
+  // Track if the user is logged in
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const navigate = useNavigate();
 
   // Check if the user is already logged in on component mount
   useEffect(() => {
     const checkUser = async () => {
-      const { data: userData, error } = await supabase.auth.getUser(); // Use getUser() instead of user()
+      // Use getUser() instead of user()
+      const { data: userData, error } = await supabase.auth.getUser(); 
 
       if (error) {
         console.error("Error fetching user:", error);
@@ -41,7 +43,8 @@ function Signup() {
         } else if (userEmail === "headcare@example.com") {
           navigate("/headcare");
         } else {
-          navigate("/volunteer"); // Default route for other users
+          // Default route for other users
+          navigate("/volunteer"); 
         }
       }
     };
@@ -51,7 +54,7 @@ function Signup() {
 
   // If already logged in, redirect away from the signup page
   if (isLoggedIn) {
-    return <div>Redirecting...</div>; // You can display a loading or redirect message
+    return <div>Redirecting...</div>; 
   }
 
   const handleSignup = async () => {
@@ -65,18 +68,20 @@ function Signup() {
     // Insert or update user details in "users" table
     const { error: upsertError } = await supabase
       .from("users")
-      .upsert([{ id: data.user.id, name, hometown, bio, email }], { onConflict: ["id"] }); // Handle conflict on `id`
+       // Handle conflict on `id`
+      .upsert([{ id: data.user.id, name, hometown, bio, email }], { onConflict: ["id"] });
 
     if (upsertError) {
       setMessage("Failed to save user information: " + upsertError.message);
       return;
     }
-    // ✅ Debugging: Fetch user data after saving to confirm it was stored
+    // Debugging: Fetch user data after saving to confirm it was stored
     const { data: userData, error: fetchError } = await supabase
       .from("users")
       .select("id, name, hometown, bio, email")
       .eq("id", data.user.id)
-      .single(); // Fetch only one user
+      // Fetch only one user
+      .single(); 
 
     if (fetchError) {
       console.error("Error fetching user data:", fetchError.message);
@@ -91,21 +96,51 @@ function Signup() {
     setMessage("Account has been created! Please check your email to confirm your account.");
     setTimeout(() => {
       navigate("/login");
-    }, 3000); // Redirect to login page after 3 seconds
+      // Redirect to login page after 3 seconds
+    }, 3000); 
   };
 
   return (
     <div className="signup-container">
+      {/* Container for the signup form */}
       <div className="signup-form">
         <h2>Sign Up</h2>
-        <input type="text" placeholder="Full Name" onChange={(e) => setName(e.target.value)} />
-        <input type="text" placeholder="Hometown" onChange={(e) => setHometown(e.target.value)} />
-        <textarea placeholder="Bio" onChange={(e) => setBio(e.target.value)} />
-        <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
-        <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+        {/* Input field for full name */}
+        <input 
+          type="text" 
+          placeholder="Full Name" 
+          onChange={(e) => setName(e.target.value)} 
+        />
+        {/* Input field for hometown */}
+        <input 
+          type="text" 
+          placeholder="Hometown" 
+          onChange={(e) => setHometown(e.target.value)} 
+        />
+        {/* Textarea for bio */}
+        <textarea 
+          placeholder="Bio" 
+          onChange={(e) => setBio(e.target.value)} 
+        />
+        {/* Input field for email */}
+        <input 
+          type="email" 
+          placeholder="Email" 
+          onChange={(e) => setEmail(e.target.value)} 
+        />
+        {/* Input field for password */}
+        <input 
+          type="password" 
+          placeholder="Password" 
+          onChange={(e) => setPassword(e.target.value)} 
+        />
+        {/* Button to handle signup */}
         <button onClick={handleSignup}>Sign Up</button>
+        {/* Button to navigate to login page */}
         <button onClick={() => navigate("/login")}>Login</button>
+        {/* Button to navigate to home page */}
         <button onClick={() => navigate("/Home")}>Home</button>
+        {/* Display message if present */}
         {message && <p className="message">{message}</p>}
       </div>
     </div>

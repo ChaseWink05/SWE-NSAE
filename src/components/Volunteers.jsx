@@ -45,7 +45,8 @@ function Volunteers() {
     {value: 'Other', label: 'Other'}
   ];
 
-  const [meetingsList, setMeetingsList] = useState([]); // List of meetings to display
+  // List of meetings to display
+  const [meetingsList, setMeetingsList] = useState([]); 
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
 
@@ -93,7 +94,8 @@ function Volunteers() {
 
   useEffect(() => {
     if (user) {
-      fetchMeetings(); // Fetch meetings when the user is set
+      // Fetch meetings when the user is set
+      fetchMeetings(); 
     }
   }, [user]);
   
@@ -154,7 +156,8 @@ function Volunteers() {
             },
             (payload) => {
               console.log('Change received!', payload);
-              fetchReports(); // Reload reports when changes occur
+              // Reload reports when changes occur
+              fetchReports(); 
             }
           )
           .subscribe();
@@ -244,7 +247,8 @@ function Volunteers() {
       }
   
       alert("Profile updated successfully!");
-      setIsEditing(false); // Exit edit mode
+      // Exit edit mode
+      setIsEditing(false); 
   
     } catch (error) {
       console.error("Unexpected error updating profile:", error);
@@ -448,6 +452,7 @@ function Volunteers() {
   return (
     <div className="volunteer-page">
       <h1>Volunteer Dashboard</h1>
+        {/* Section to display upcoming meetings */}
       <div className = "meeting-list">
         <h3>Upcoming Meetings</h3>
         {meetingsList.length > 0 ? (
@@ -462,19 +467,22 @@ function Volunteers() {
           <p>No upcoming meetings.</p>
         )}
       </div>
+       {/* Display any messages */}
       {message && <p className="message">{message}</p>}
+      {/* Button to toggle chat visibility */}
       <button 
         className="chat-toggle-button" 
         onClick={() => setShowChat(prev => !prev)}
       >
         {showChat ? "Close Chat" : "Organization Chat"}
       </button>
-
+       {/* Chat component, shown if showChat is true */}
       {showChat && (
         <div className="chat-container">
           <ChatApp />
         </div>
       )}
+      {/* Section to display and edit volunteer profile */}
       <div className="volunteer-profile">
         <h2>Your Profile</h2>
   
@@ -527,7 +535,7 @@ function Volunteers() {
             </button>
           </div>
         )}
-  
+        {/* Section to display and manage stray animal reports */}
         <div className="volunteer-reports">
           <div className="reports-header">
             <h2>Stray Animal Reports</h2>
@@ -543,7 +551,7 @@ function Volunteers() {
               </button>
             </div>
           </div>
-  
+          {/* Form to submit or edit a report */}
           {showReportForm && (
             <div className="report-form">
             <h3>{editingReport ? "Edit Animal Report" : "New Animal Report"}</h3>
@@ -654,7 +662,7 @@ function Volunteers() {
               </div>
             </div>
           )}
-  
+          {/* Loading indicator while fetching reports */}
           {isLoading ? (
             <div className="loading-indicator">
               <div className="loading-spinner"></div>
